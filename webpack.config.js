@@ -2,32 +2,20 @@
 
 const webpack = require("webpack");
 const path = require("path");
-const CopyPlugin = require('copy-webpack-plugin');
 const PROD = (process.env.NODE_ENV === 'production');
-
-let plugins = [
-  new CopyPlugin([{
-    from: '../samples/index.html', to: '.'
-  }])
-];
-
-if (PROD) {
-  plugins.push(new webpack.optimize.UglifyJsPlugin({
-    sourceMap: true
-  }));
-}
 
 module.exports = {
   context: __dirname + "/src",
-  entry: {
-    "playkit-js-kanalytics": "kanalytics.js"
-  },
+  entry: PROD ? {"playkit-kanalytics.min": "kanalytics.js"} : {"playkit-kanalytics": "kanalytics.js"},
   output: {
     path: __dirname + "/dist",
-    filename: '[name].js'
+    filename: '[name].js',
+    library: "PlaykitJsKAnalytics",
+    libraryTarget: "umd",
+    devtoolModuleFilenameTemplate: "webpack:///kanalytics/[resource-path]",
   },
   devtool: 'source-map',
-  plugins: plugins,
+  plugins: PROD ? [new webpack.optimize.UglifyJsPlugin({sourceMap: true})] : [],
   module: {
     rules: [{
       test: /\.js$/,
@@ -39,7 +27,9 @@ module.exports = {
       ]
     }, {
       test: /\.js$/,
-      exclude: /node_modules/,
+      exclude: [
+        /node_modules/
+      ],
       enforce: 'pre',
       use: [{
         loader: 'eslint-loader',
@@ -59,5 +49,13 @@ module.exports = {
       path.resolve(__dirname, "src"),
       "node_modules"
     ]
+  },
+  externals: {
+    "playkit-js": {
+      commonjs: "playkit-js",
+      commonjs2: "playkit-js",
+      amd: "playkit-js",
+      root: "Playkit"
+    }
   }
 };
