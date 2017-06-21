@@ -1,6 +1,6 @@
 //@flow
-import {BasePlugin, registerPlugin, VERSION, FakeEvent} from 'playkit-js'
-import {StatsService, Configuration} from 'playkit-js-providers/dist/statsService.min'
+import {BasePlugin, registerPlugin, VERSION} from 'playkit-js'
+import StatsService from 'playkit-js-providers/dist/statsService'
 import EventTypes from './event-types'
 import Event from './event'
 
@@ -9,17 +9,16 @@ const pluginName = "kanalytics";
 
 /**
  * Your class description.
+ * Your class description.
  * @classdesc
  */
-class Kanalytics extends BasePlugin {
+export default class Kanalytics extends BasePlugin {
   /**
-   * TODO: Override and define your default configuration for the plugin.
    * @static
    */
   static defaultConfig: Object = {};
 
   /**
-   * TODO: Define under what conditions the plugin is valid.
    * @static
    * @public
    * @returns {boolean} - Whether the plugin is valid.
@@ -33,7 +32,7 @@ class Kanalytics extends BasePlugin {
   _lastSeekEventTime: number;
   _lastSeek: number;
   _hasSeeked: boolean;
-  _playingEventsState: {[event: string]: boolean};
+  _playingEventsState: { [event: string]: boolean };
 
   /**
    * @constructor
@@ -58,7 +57,6 @@ class Kanalytics extends BasePlugin {
   }
 
   /**
-   * TODO: Define the destroy logic of your plugin.
    * @public
    * @return {void}
    */
@@ -68,14 +66,27 @@ class Kanalytics extends BasePlugin {
   }
 
   registerListeners(): void {
-    var PlayerEvent = this.player.Event;
-    this.eventManager.listen(this.player, PlayerEvent.PLAY, this._sendAnalyticsEvent.bind(this, EventTypes.PLAY));
-    this.eventManager.listen(this.player, PlayerEvent.TIME_UPDATE, this._sendTimeAnalytics.bind(this));
-    this.eventManager.listen(this.player, PlayerEvent.SEEKED, this._setSeeked.bind(this));
+    let PlayerEvent = this.player.Event;
+    this.eventManager.listen(this.player, PlayerEvent.FIRST_PLAY, this._sendAnalyticsEvent.bind(this, EventTypes.PLAY));
+    this.eventManager.listen(this.player, PlayerEvent.PLAY, this._onPlay.bind(this));
+    this.eventManager.listen(this.player, PlayerEvent.ENDED, this._onEnded.bind(this));
+    this.eventManager.listen(this.player, PlayerEvent.SEEKED, this._sendSeekEvent.bind(this));
+    this.eventManager.listen(this.player, PlayerEvent.TIME_UPDATE, this._sendTimeEvent.bind(this));
 
   }
 
-  _setSeeked(evebt: FakeEvent): void {
+  _onPlay(): void {
+    if (this._ended) {
+      this._ended = false;
+      this._sendAnalyticsEvent(EventTypes.REPLAY);
+    }
+  }
+
+  _onEnded(): void {
+    this._ended = true;
+  }
+
+  _sendSeekEvent(): void {
     if (this._lastSeekEventTime == 0 ||
       this._lastSeekEventTime + 2000 < new Date().getTime()) {
       this._sendAnalyticsEvent(EventTypes.SEEK);
@@ -85,56 +96,60 @@ class Kanalytics extends BasePlugin {
     this._lastSeek = this.player.currentTime;
   }
 
-  _sendTimeAnalytics(): void {
+  _sendTimeEvent(): void {
 
     let percent = this.player.currentTime / this.player.duration;
-    let seekPercent = this._lastSeek / this.player.duration;
 
-    if (!this._playingEventsState.PLAY_REACHED_25 && percent >= .25 && seekPercent <= .25) {
+    if (!this._playingEventsState.PLAY_REACHED_25 && percent >= .25) {
       this._playingEventsState.PLAY_REACHED_25 = true;
       this._sendAnalyticsEvent(EventTypes.PLAY_REACHED_25);
     }
-    else if (!this._playingEventsState.PLAY_REACHED_50 && percent >= .50 && seekPercent < .50) {
+    if (!this._playingEventsState.PLAY_REACHED_50 && percent >= .50) {
       this._playingEventsState.PLAY_REACHED_50 = true;
       this._sendAnalyticsEvent(EventTypes.PLAY_REACHED_50);
     }
-    else if (!this._playingEventsState.PLAY_REACHED_75 && percent >= .75 && seekPercent < .75) {
+    if (!this._playingEventsState.PLAY_REACHED_75 && percent >= .75) {
       this._playingEventsState.PLAY_REACHED_75 = true;
       this._sendAnalyticsEvent(EventTypes.PLAY_REACHED_75);
     }
-    else if (!this._playingEventsState.PLAY_REACHED_100 && percent >= .98 && seekPercent < 1) {
-      this._playingEventsState.PLAY_REACHED_75 = true;
-      this._sendAnalyticsEvent(EventTypes.PLAY_REACHED_75);
+    if (!this._playingEventsState.PLAY_REACHED_100 && percent >= .98) {
+      this._playingEventsState.PLAY_REACHED_100 = true;
+      this._sendAnalyticsEvent(EventTypes.PLAY_REACHED_100);
     }
   }
 
-  _sendAnalyticsEvent(eventType: EventTypes): void {
-
+  _sendAnalyticsEvent(eventType: number): void {
+    let ks;
     let statsEvent = new Event(eventType);
     statsEvent.clientVer = VERSION;
     statsEvent.currentPoint = this.player.currentTime;
     statsEvent.duration = this.player.duration;
-
-    if (this.player.config) {
-      statsEvent.partnerID = this.player.config.partnerID;
-      statsEvent.uiconfId = this.player.config.uiConfID;
-      statsEvent.entryId = this.player.config.id;
+    let config = this.player.config;
+    if (config) {
+      statsEvent.entryId = config.id;
+      let session = config.session;
+      if (session) {
+        statsEvent.sessionId = session.id;
+        statsEvent.partnerId = session.partnerID;
+        statsEvent.widgetId = "_" + session.partnerID;
+        statsEvent.uiconfId = session.uiConfID;
+        ks = session.ks;
+      }
     }
     statsEvent.seek = this._hasSeeked;
-    statsEvent.widgetId = "_" + this.player.config.partnerID;
 
-    //TO DO: set this properties correctlly
+    //TODO: set this properties correctly
     statsEvent.contextId = 0;
     statsEvent.featureType = 0;
     statsEvent.applicationId = "";
     statsEvent.userId = 0;
+
     statsEvent.referrer = document.referrer;
 
-    let providerConfig = Configuration.get();
-    let request: RequestBuilder = StatsService.collect(providerConfig.beUrl, this.player.config.ks, {"event": statsEvent});
+    let request: RequestBuilder = StatsService.collect(ks, {"event": statsEvent});
     request.doHttpRequest()
       .then(() => {
-          this.logger.info(`Analitycs event sent`, statsEvent);
+          this.logger.debug(`Analitycs event sent`, statsEvent);
         },
         err => {
           this.logger.error(`Failed to send analitycs event`, statsEvent, err);
@@ -143,6 +158,8 @@ class Kanalytics extends BasePlugin {
   }
 
   _initializeMembers() {
+    this._ended = false;
+    this._playingEventsState = {};
     this._lastSeekEventTime = 0;
     this._lastSeek = 0;
     this._hasSeeked = false;

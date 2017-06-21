@@ -56,6 +56,12 @@ module.exports = {
       commonjs2: "playkit-js",
       amd: "playkit-js",
       root: "Playkit"
+    },
+    "playkit-js-providers": {
+      commonjs: "playkit-js-providers",
+      commonjs2: "playkit-js-providers",
+      amd: "playkit-js-providers",
+      root: "PlaykitJsProviders"
     }
   }
 };
