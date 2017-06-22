@@ -109,10 +109,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var pluginName = "kanalytics";
+var SEEK_OFFSET = 2000;
 
 /**
- * Your class description.
- * Your class description.
  * @classdesc
  */
 
@@ -132,8 +131,20 @@ var Kanalytics = function (_BasePlugin) {
       return true;
     }
 
-    // Stores the last time we issued a seek event
-    // avoids sending lots of seeks while scrubbing
+    /**
+     * The time of the last seek event
+     * @private
+     */
+
+    /**
+     * Whether seeking occurred
+     * @private
+     */
+
+    /**
+     * Indicate whether time percent event already sent
+     * @private
+     */
 
     /**
      * @static
@@ -154,15 +165,6 @@ var Kanalytics = function (_BasePlugin) {
 
     _this._initializeMembers();
     _this.registerListeners();
-
-    /**
-     Now you have access to the BasePlugin members:
-     1. config: The runtime configuration of the plugin.
-     2. name: The name of the plugin.
-     3. logger: The logger of the plugin.
-     4. player: Reference to the actual player.
-     5. eventManager: The event manager of the plugin.
-     */
     return _this;
   }
 
@@ -204,12 +206,13 @@ var Kanalytics = function (_BasePlugin) {
   }, {
     key: '_sendSeekEvent',
     value: function _sendSeekEvent() {
-      if (this._lastSeekEventTime == 0 || this._lastSeekEventTime + 2000 < new Date().getTime()) {
+      var now = new Date().getTime();
+      if (this._lastSeekEvent === 0 || this._lastSeekEvent + SEEK_OFFSET < now) {
+        // avoid sending lots of seeking while scrubbing
         this._sendAnalyticsEvent(_eventTypes2.default.SEEK);
       }
-      this._lastSeekEventTime = new Date().getTime();
+      this._lastSeekEvent = now;
       this._hasSeeked = true;
-      this._lastSeek = this.player.currentTime;
     }
   }, {
     key: '_sendTimeEvent',
@@ -217,20 +220,20 @@ var Kanalytics = function (_BasePlugin) {
 
       var percent = this.player.currentTime / this.player.duration;
 
-      if (!this._playingEventsState.PLAY_REACHED_25 && percent >= .25) {
-        this._playingEventsState.PLAY_REACHED_25 = true;
+      if (!this._timePercentEvent.PLAY_REACHED_25 && percent >= .25) {
+        this._timePercentEvent.PLAY_REACHED_25 = true;
         this._sendAnalyticsEvent(_eventTypes2.default.PLAY_REACHED_25);
       }
-      if (!this._playingEventsState.PLAY_REACHED_50 && percent >= .50) {
-        this._playingEventsState.PLAY_REACHED_50 = true;
+      if (!this._timePercentEvent.PLAY_REACHED_50 && percent >= .50) {
+        this._timePercentEvent.PLAY_REACHED_50 = true;
         this._sendAnalyticsEvent(_eventTypes2.default.PLAY_REACHED_50);
       }
-      if (!this._playingEventsState.PLAY_REACHED_75 && percent >= .75) {
-        this._playingEventsState.PLAY_REACHED_75 = true;
+      if (!this._timePercentEvent.PLAY_REACHED_75 && percent >= .75) {
+        this._timePercentEvent.PLAY_REACHED_75 = true;
         this._sendAnalyticsEvent(_eventTypes2.default.PLAY_REACHED_75);
       }
-      if (!this._playingEventsState.PLAY_REACHED_100 && percent >= .98) {
-        this._playingEventsState.PLAY_REACHED_100 = true;
+      if (!this._timePercentEvent.PLAY_REACHED_100 && percent >= .98) {
+        this._timePercentEvent.PLAY_REACHED_100 = true;
         this._sendAnalyticsEvent(_eventTypes2.default.PLAY_REACHED_100);
       }
     }
@@ -245,16 +248,14 @@ var Kanalytics = function (_BasePlugin) {
       statsEvent.currentPoint = this.player.currentTime;
       statsEvent.duration = this.player.duration;
       var config = this.player.config;
-      if (config) {
-        statsEvent.entryId = config.id;
-        var session = config.session;
-        if (session) {
-          statsEvent.sessionId = session.id;
-          statsEvent.partnerId = session.partnerID;
-          statsEvent.widgetId = "_" + session.partnerID;
-          statsEvent.uiconfId = session.uiConfID;
-          ks = session.ks;
-        }
+      statsEvent.entryId = config.id;
+      var session = config.session;
+      if (session) {
+        statsEvent.sessionId = session.id;
+        statsEvent.partnerId = session.partnerID;
+        statsEvent.widgetId = "_" + session.partnerID;
+        statsEvent.uiconfId = session.uiConfID;
+        ks = session.ks;
       }
       statsEvent.seek = this._hasSeeked;
 
@@ -277,9 +278,8 @@ var Kanalytics = function (_BasePlugin) {
     key: '_initializeMembers',
     value: function _initializeMembers() {
       this._ended = false;
-      this._playingEventsState = {};
-      this._lastSeekEventTime = 0;
-      this._lastSeek = 0;
+      this._timePercentEvent = {};
+      this._lastSeekEvent = 0;
       this._hasSeeked = false;
       this.PLAY_REACHED_25 = false;
       this.PLAY_REACHED_50 = false;
@@ -1365,20 +1365,43 @@ Object.defineProperty(exports, "__esModule", {
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Event =
-//will indicate if the event is thrown for the first video in the session
 
-/*//will be retrieved from the request of the user
- userIp:string;
-  //the time in milliseconds the event took
- processDuration: number;
-  //the id of the GUI control - will be used in the future to better understand what the user clicked
- controlId:string;
+/**
+ * @constructor
+ * @param {number} eventType - The event type
  */
-//true if the user ever used seek in this session
 
-//the timestamp along the video when the event happend
+/**
+ * The context id
+ */
 
-//a unique string generated by the client that will represent the client-side session: the primary component will pass it on to other components that sprout from it
+/**
+ * Whether the event is thrown for the first video in the session
+ */
+
+/**
+ * Whether the user ever used seek in this session
+ */
+
+/**
+ * The timestamp along the video when the event happened
+ */
+
+/**
+ * The uiconf id
+ */
+
+/**
+ * The entry id
+ */
+
+/**
+ * The session id. A unique string generated by the client that will represent the client-side session
+ * */
+
+/**
+ * The event type
+ */
 function Event(eventType) {
   _classCallCheck(this, Event);
 
@@ -1387,22 +1410,41 @@ function Event(eventType) {
   this.eventTimestamp = new Date().getTime();
   this.uiconfId = 0;
 }
-//kaltura application name
-
-/*//timestamp of the new point on the timeline of the video after the user seeks
- newPoint: number;
+/**
+ * The feature type
  */
-//the referrer of the client
 
-//the duration of the video in milliseconds - will make it much faster than quering the db for each entry
+/**
+ * The kaltura application name
+ */
 
-//the partner's user id
+/**
+ * The referrer of the client
+ */
 
+/**
+ * The duration of the video in milliseconds
+ */
 
-/* //the UV cookie - creates in the operational system and should be passed on ofr every event
- uniqueViewer: string;*/
+/**
+ * The partner's user id
+ */
 
-//the client's timestamp of this event
+/**
+ * The widget id
+ */
+
+/**
+ * The partner id
+ */
+
+/**
+ * The client's timestamp of this event
+ */
+
+/**
+ * The client version
+ */
 ;
 
 exports.default = Event;
