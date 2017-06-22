@@ -147,6 +147,16 @@ var Kanalytics = function (_BasePlugin) {
      */
 
     /**
+     * The player params which relevant to analytics request
+     * @private
+     */
+
+    /**
+     * The Kaltura session
+     * @private
+     */
+
+    /**
      * @static
      */
 
@@ -164,7 +174,7 @@ var Kanalytics = function (_BasePlugin) {
     var _this = _possibleConstructorReturn(this, (Kanalytics.__proto__ || Object.getPrototypeOf(Kanalytics)).call(this, name, player, config));
 
     _this._initializeMembers();
-    _this.registerListeners();
+    _this._registerListeners();
     return _this;
   }
 
@@ -177,114 +187,176 @@ var Kanalytics = function (_BasePlugin) {
   _createClass(Kanalytics, [{
     key: 'destroy',
     value: function destroy() {
-      this._initializeMembers();
       this.eventManager.destroy();
     }
+
+    /**
+     * Register the player event listeners
+     * @private
+     * @return {void}
+     */
+
   }, {
-    key: 'registerListeners',
-    value: function registerListeners() {
+    key: '_registerListeners',
+    value: function _registerListeners() {
       var PlayerEvent = this.player.Event;
-      this.eventManager.listen(this.player, PlayerEvent.FIRST_PLAY, this._sendAnalyticsEvent.bind(this, _eventTypes2.default.PLAY));
+      this.eventManager.listen(this.player, PlayerEvent.FIRST_PLAY, this._sendAnalytics.bind(this, _eventTypes2.default.PLAY));
       this.eventManager.listen(this.player, PlayerEvent.PLAY, this._onPlay.bind(this));
       this.eventManager.listen(this.player, PlayerEvent.ENDED, this._onEnded.bind(this));
-      this.eventManager.listen(this.player, PlayerEvent.SEEKED, this._sendSeekEvent.bind(this));
-      this.eventManager.listen(this.player, PlayerEvent.TIME_UPDATE, this._sendTimeEvent.bind(this));
+      this.eventManager.listen(this.player, PlayerEvent.SEEKED, this._sendSeekAnalytic.bind(this));
+      this.eventManager.listen(this.player, PlayerEvent.TIME_UPDATE, this._sendTimePercentAnalytic.bind(this));
     }
+
+    /**
+     * The play event listener
+     * @private
+     * @return {void}
+     */
+
   }, {
     key: '_onPlay',
     value: function _onPlay() {
       if (this._ended) {
         this._ended = false;
-        this._sendAnalyticsEvent(_eventTypes2.default.REPLAY);
+        this._sendAnalytics(_eventTypes2.default.REPLAY);
       }
     }
+
+    /**
+     * The ended event listener
+     * @private
+     * @return {void}
+     */
+
   }, {
     key: '_onEnded',
     value: function _onEnded() {
       this._ended = true;
     }
+
+    /**
+     * Send seek analytic
+     * @private
+     * @return {void}
+     */
+
   }, {
-    key: '_sendSeekEvent',
-    value: function _sendSeekEvent() {
+    key: '_sendSeekAnalytic',
+    value: function _sendSeekAnalytic() {
       var now = new Date().getTime();
       if (this._lastSeekEvent === 0 || this._lastSeekEvent + SEEK_OFFSET < now) {
         // avoid sending lots of seeking while scrubbing
-        this._sendAnalyticsEvent(_eventTypes2.default.SEEK);
+        this._sendAnalytics(_eventTypes2.default.SEEK);
       }
       this._lastSeekEvent = now;
       this._hasSeeked = true;
     }
+
+    /**
+     * Send time percent analytic
+     * @private
+     * @return {void}
+     */
+
   }, {
-    key: '_sendTimeEvent',
-    value: function _sendTimeEvent() {
-
+    key: '_sendTimePercentAnalytic',
+    value: function _sendTimePercentAnalytic() {
       var percent = this.player.currentTime / this.player.duration;
-
       if (!this._timePercentEvent.PLAY_REACHED_25 && percent >= .25) {
         this._timePercentEvent.PLAY_REACHED_25 = true;
-        this._sendAnalyticsEvent(_eventTypes2.default.PLAY_REACHED_25);
+        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_25);
       }
       if (!this._timePercentEvent.PLAY_REACHED_50 && percent >= .50) {
         this._timePercentEvent.PLAY_REACHED_50 = true;
-        this._sendAnalyticsEvent(_eventTypes2.default.PLAY_REACHED_50);
+        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_50);
       }
       if (!this._timePercentEvent.PLAY_REACHED_75 && percent >= .75) {
         this._timePercentEvent.PLAY_REACHED_75 = true;
-        this._sendAnalyticsEvent(_eventTypes2.default.PLAY_REACHED_75);
+        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_75);
       }
       if (!this._timePercentEvent.PLAY_REACHED_100 && percent >= .98) {
         this._timePercentEvent.PLAY_REACHED_100 = true;
-        this._sendAnalyticsEvent(_eventTypes2.default.PLAY_REACHED_100);
+        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_100);
       }
     }
+
+    /**
+     * Get the player params which relevant to analytics request
+     * @private
+     * @return {Object} - The player params
+     */
+
   }, {
-    key: '_sendAnalyticsEvent',
-    value: function _sendAnalyticsEvent(eventType) {
+    key: '_sendAnalytics',
+
+
+    /**
+     * Register the player event listeners
+     * @param {number} eventType - The event type
+     * @private
+     * @return {void}
+     */
+    value: function _sendAnalytics(eventType) {
       var _this2 = this;
 
-      var ks = void 0;
       var statsEvent = new _event2.default(eventType);
-      statsEvent.clientVer = _playkitJs.VERSION;
       statsEvent.currentPoint = this.player.currentTime;
       statsEvent.duration = this.player.duration;
-      var config = this.player.config;
-      statsEvent.entryId = config.id;
-      var session = config.session;
-      if (session) {
-        statsEvent.sessionId = session.id;
-        statsEvent.partnerId = session.partnerID;
-        statsEvent.widgetId = "_" + session.partnerID;
-        statsEvent.uiconfId = session.uiConfID;
-        ks = session.ks;
-      }
       statsEvent.seek = this._hasSeeked;
+      Object.assign(statsEvent, this._playerParams);
 
-      //TODO: set this properties correctly
-      statsEvent.contextId = 0;
-      statsEvent.featureType = 0;
-      statsEvent.applicationId = "";
-      statsEvent.userId = 0;
-
-      statsEvent.referrer = document.referrer;
-
-      var request = _statsService2.default.collect(ks, { "event": statsEvent });
+      var request = _statsService2.default.collect(this._ks, { "event": statsEvent });
       request.doHttpRequest().then(function () {
-        _this2.logger.debug('Analitycs event sent', statsEvent);
+        _this2.logger.debug('Analitycs event sent ', statsEvent);
       }, function (err) {
-        _this2.logger.error('Failed to send analitycs event', statsEvent, err);
+        _this2.logger.error('Failed to send analitycs event ', statsEvent, err);
       });
     }
+
+    /**
+     * Initialize the plugin members
+     * @private
+     * @return {void}
+     */
+
   }, {
     key: '_initializeMembers',
     value: function _initializeMembers() {
+      this._playerConfParams = null;
+      this._ks = "";
       this._ended = false;
       this._timePercentEvent = {};
       this._lastSeekEvent = 0;
       this._hasSeeked = false;
-      this.PLAY_REACHED_25 = false;
-      this.PLAY_REACHED_50 = false;
-      this.PLAY_REACHED_75 = false;
-      this.PLAY_REACHED_100 = false;
+    }
+  }, {
+    key: '_playerParams',
+    get: function get() {
+      if (!this._playerConfParams) {
+        this._playerConfParams = {
+          clientVer: _playkitJs.VERSION,
+          referrer: document.referrer,
+          entryId: this.player.config.id,
+          sessionId: "",
+          partnerId: 0,
+          widgetId: "",
+          uiconfId: 0,
+          //TODO: set these properties correctly
+          contextId: 0,
+          featureType: 0,
+          applicationId: "",
+          userId: 0
+        };
+        var session = this.player.config.session;
+        if (session) {
+          this._playerConfParams.sessionId = session.id;
+          this._playerConfParams.partnerId = session.partnerID;
+          this._playerConfParams.widgetId = "_" + session.partnerID;
+          this._playerConfParams.uiconfId = session.uiConfID;
+          this._ks = session.ks;
+        }
+      }
+      return this._playerConfParams;
     }
   }]);
 
@@ -1408,7 +1480,6 @@ function Event(eventType) {
   this.eventType = eventType;
   this.isFirstInSession = false;
   this.eventTimestamp = new Date().getTime();
-  this.uiconfId = 0;
 }
 /**
  * The feature type
