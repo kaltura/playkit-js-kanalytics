@@ -5,11 +5,9 @@ import EventTypes from './event-types'
 import Event from './event'
 
 const pluginName = "kanalytics";
-
+const SEEK_OFFSET: number = 2000;
 
 /**
- * Your class description.
- * Your class description.
  * @classdesc
  */
 export default class Kanalytics extends BasePlugin {
@@ -27,12 +25,21 @@ export default class Kanalytics extends BasePlugin {
     return true;
   }
 
-  // Stores the last time we issued a seek event
-  // avoids sending lots of seeks while scrubbing
-  _lastSeekEventTime: number;
-  _lastSeek: number;
+  /**
+   * The time of the last seek event
+   * @private
+   */
+  _lastSeekEvent: number;
+  /**
+   * Whether seeking occurred
+   * @private
+   */
   _hasSeeked: boolean;
-  _playingEventsState: { [event: string]: boolean };
+  /**
+   * Indicate whether time percent event already sent
+   * @private
+   */
+  _timePercentEvent: { [event: string]: boolean };
 
   /**
    * @constructor
@@ -44,16 +51,6 @@ export default class Kanalytics extends BasePlugin {
     super(name, player, config);
     this._initializeMembers();
     this.registerListeners();
-
-
-    /**
-     Now you have access to the BasePlugin members:
-     1. config: The runtime configuration of the plugin.
-     2. name: The name of the plugin.
-     3. logger: The logger of the plugin.
-     4. player: Reference to the actual player.
-     5. eventManager: The event manager of the plugin.
-     */
   }
 
   /**
@@ -87,33 +84,33 @@ export default class Kanalytics extends BasePlugin {
   }
 
   _sendSeekEvent(): void {
-    if (this._lastSeekEventTime == 0 ||
-      this._lastSeekEventTime + 2000 < new Date().getTime()) {
+    let now = new Date().getTime();
+    if (this._lastSeekEvent === 0 || this._lastSeekEvent + SEEK_OFFSET < now) {
+      // avoid sending lots of seeking while scrubbing
       this._sendAnalyticsEvent(EventTypes.SEEK);
     }
-    this._lastSeekEventTime = new Date().getTime();
+    this._lastSeekEvent = now;
     this._hasSeeked = true;
-    this._lastSeek = this.player.currentTime;
   }
 
   _sendTimeEvent(): void {
 
     let percent = this.player.currentTime / this.player.duration;
 
-    if (!this._playingEventsState.PLAY_REACHED_25 && percent >= .25) {
-      this._playingEventsState.PLAY_REACHED_25 = true;
+    if (!this._timePercentEvent.PLAY_REACHED_25 && percent >= .25) {
+      this._timePercentEvent.PLAY_REACHED_25 = true;
       this._sendAnalyticsEvent(EventTypes.PLAY_REACHED_25);
     }
-    if (!this._playingEventsState.PLAY_REACHED_50 && percent >= .50) {
-      this._playingEventsState.PLAY_REACHED_50 = true;
+    if (!this._timePercentEvent.PLAY_REACHED_50 && percent >= .50) {
+      this._timePercentEvent.PLAY_REACHED_50 = true;
       this._sendAnalyticsEvent(EventTypes.PLAY_REACHED_50);
     }
-    if (!this._playingEventsState.PLAY_REACHED_75 && percent >= .75) {
-      this._playingEventsState.PLAY_REACHED_75 = true;
+    if (!this._timePercentEvent.PLAY_REACHED_75 && percent >= .75) {
+      this._timePercentEvent.PLAY_REACHED_75 = true;
       this._sendAnalyticsEvent(EventTypes.PLAY_REACHED_75);
     }
-    if (!this._playingEventsState.PLAY_REACHED_100 && percent >= .98) {
-      this._playingEventsState.PLAY_REACHED_100 = true;
+    if (!this._timePercentEvent.PLAY_REACHED_100 && percent >= .98) {
+      this._timePercentEvent.PLAY_REACHED_100 = true;
       this._sendAnalyticsEvent(EventTypes.PLAY_REACHED_100);
     }
   }
@@ -125,16 +122,14 @@ export default class Kanalytics extends BasePlugin {
     statsEvent.currentPoint = this.player.currentTime;
     statsEvent.duration = this.player.duration;
     let config = this.player.config;
-    if (config) {
-      statsEvent.entryId = config.id;
-      let session = config.session;
-      if (session) {
-        statsEvent.sessionId = session.id;
-        statsEvent.partnerId = session.partnerID;
-        statsEvent.widgetId = "_" + session.partnerID;
-        statsEvent.uiconfId = session.uiConfID;
-        ks = session.ks;
-      }
+    statsEvent.entryId = config.id;
+    let session = config.session;
+    if (session) {
+      statsEvent.sessionId = session.id;
+      statsEvent.partnerId = session.partnerID;
+      statsEvent.widgetId = "_" + session.partnerID;
+      statsEvent.uiconfId = session.uiConfID;
+      ks = session.ks;
     }
     statsEvent.seek = this._hasSeeked;
 
@@ -159,9 +154,8 @@ export default class Kanalytics extends BasePlugin {
 
   _initializeMembers() {
     this._ended = false;
-    this._playingEventsState = {};
-    this._lastSeekEventTime = 0;
-    this._lastSeek = 0;
+    this._timePercentEvent = {};
+    this._lastSeekEvent = 0;
     this._hasSeeked = false;
     this.PLAY_REACHED_25 = false;
     this.PLAY_REACHED_50 = false;

@@ -1,6 +1,7 @@
 //eslint-disable-next-line no-unused-vars
 import kanalytics from '../../src/kanalytics.js'
 import {playkit, VERSION} from 'playkit-js'
+import * as TestUtils from 'playkit-js/test/src/utils/test-utils'
 
 
 describe('KanalyticsPlugin', function () {
@@ -27,7 +28,6 @@ describe('KanalyticsPlugin', function () {
   /**
    * @param {string} ks - ks
    * @param {Object} event - event
-   * @param {boolean} seeked - seeked
    * @return {void}
    */
   function verifyPayloadProperties(ks, event) {
@@ -54,6 +54,7 @@ describe('KanalyticsPlugin', function () {
   afterEach(() => {
     sandbox.restore();
     player.destroy();
+    TestUtils.removeVideoElementsFromTestPage();
   });
 
   it('should send first play', (done) => {
