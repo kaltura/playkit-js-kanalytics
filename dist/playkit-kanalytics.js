@@ -307,9 +307,9 @@ var Kanalytics = function (_BasePlugin) {
 
       var request = _statsService2.default.collect(this._ks, { "event": statsEvent });
       request.doHttpRequest().then(function () {
-        _this2.logger.debug('Analitycs event sent ', statsEvent);
+        _this2.logger.debug('Analytics event sent ', statsEvent);
       }, function (err) {
-        _this2.logger.error('Failed to send analitycs event ', statsEvent, err);
+        _this2.logger.error('Failed to send analytics event ', statsEvent, err);
       });
     }
 
