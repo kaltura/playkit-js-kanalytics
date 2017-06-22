@@ -196,10 +196,10 @@ export default class Kanalytics extends BasePlugin {
     let request: RequestBuilder = StatsService.collect(this._ks, {"event": statsEvent});
     request.doHttpRequest()
       .then(() => {
-          this.logger.debug(`Analitycs event sent `, statsEvent);
+          this.logger.debug(`Analytics event sent `, statsEvent);
         },
         err => {
-          this.logger.error(`Failed to send analitycs event `, statsEvent, err);
+          this.logger.error(`Failed to send analytics event `, statsEvent, err);
         });
   }
 
