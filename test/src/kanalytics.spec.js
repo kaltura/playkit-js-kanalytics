@@ -5,7 +5,7 @@ import * as TestUtils from 'playkit-js/test/src/utils/test-utils'
 
 
 describe('KanalyticsPlugin', function () {
-  let player, sandbox, send;
+  let player, sandbox, sendSpy;
   let config = {
     "id": "1_rwbj3j0a",
     "session": {
@@ -48,7 +48,7 @@ describe('KanalyticsPlugin', function () {
   beforeEach(() => {
     player = playkit(config);
     sandbox = sinon.sandbox.create();
-    send = sandbox.spy(XMLHttpRequest.prototype, 'send');
+    sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
   });
 
   afterEach(() => {
@@ -59,7 +59,7 @@ describe('KanalyticsPlugin', function () {
 
   it('should send first play', (done) => {
     player.addEventListener(player.Event.FIRST_PLAY, () => {
-      let payload = JSON.parse(send.lastCall.args[0]);
+      let payload = JSON.parse(sendSpy.lastCall.args[0]);
       verifyPayloadProperties(payload.ks, payload.event);
       payload.event.seek.should.be.false;
       payload.event.eventType.should.equal(3);
@@ -74,7 +74,7 @@ describe('KanalyticsPlugin', function () {
     });
     player.addEventListener(player.Event.ENDED, () => {
       player.addEventListener(player.Event.PLAY, () => {
-        let payload = JSON.parse(send.lastCall.args[0]);
+        let payload = JSON.parse(sendSpy.lastCall.args[0]);
         verifyPayloadProperties(payload.ks, payload.event);
         payload.event.seek.should.be.true;
         payload.event.eventType.should.equal(16);
@@ -90,7 +90,7 @@ describe('KanalyticsPlugin', function () {
       player.currentTime = player.duration / 2;
     });
     player.addEventListener(player.Event.SEEKED, () => {
-      let payload = JSON.parse(send.lastCall.args[0]);
+      let payload = JSON.parse(sendSpy.lastCall.args[0]);
       verifyPayloadProperties(payload.ks, payload.event);
       payload.event.seek.should.be.false;
       payload.event.eventType.should.equal(17);
@@ -104,7 +104,7 @@ describe('KanalyticsPlugin', function () {
       player.currentTime = player.duration / 2;
     });
     player.addEventListener(player.Event.SEEKED, () => {
-      let payload = JSON.parse(send.lastCall.args[0]);
+      let payload = JSON.parse(sendSpy.lastCall.args[0]);
       verifyPayloadProperties(payload.ks, payload.event);
       payload.event.seek.should.be.false;
       payload.event.eventType.should.equal(17);
@@ -118,7 +118,7 @@ describe('KanalyticsPlugin', function () {
       player.currentTime = 4;
     });
     player.addEventListener(player.Event.TIME_UPDATE, () => {
-      let payload = JSON.parse(send.lastCall.args[0]);
+      let payload = JSON.parse(sendSpy.lastCall.args[0]);
       verifyPayloadProperties(payload.ks, payload.event);
       payload.event.eventType.should.equal(4);
       done();
@@ -131,7 +131,7 @@ describe('KanalyticsPlugin', function () {
       player.currentTime = 7;
     });
     player.addEventListener(player.Event.TIME_UPDATE, () => {
-      let payload = JSON.parse(send.lastCall.args[0]);
+      let payload = JSON.parse(sendSpy.lastCall.args[0]);
       verifyPayloadProperties(payload.ks, payload.event);
       payload.event.eventType.should.equal(5);
       done();
@@ -144,7 +144,7 @@ describe('KanalyticsPlugin', function () {
       player.currentTime = 10;
     });
     player.addEventListener(player.Event.TIME_UPDATE, () => {
-      let payload = JSON.parse(send.lastCall.args[0]);
+      let payload = JSON.parse(sendSpy.lastCall.args[0]);
       verifyPayloadProperties(payload.ks, payload.event);
       payload.event.eventType.should.equal(6);
       done();
@@ -157,7 +157,7 @@ describe('KanalyticsPlugin', function () {
       player.currentTime = 12.5;
     });
     player.addEventListener(player.Event.TIME_UPDATE, () => {
-      let payload = JSON.parse(send.lastCall.args[0]);
+      let payload = JSON.parse(sendSpy.lastCall.args[0]);
       verifyPayloadProperties(payload.ks, payload.event);
       payload.event.eventType.should.equal(7);
       done();
@@ -170,10 +170,10 @@ describe('KanalyticsPlugin', function () {
       player.currentTime = 12.5;
     });
     player.addEventListener(player.Event.TIME_UPDATE, () => {
-      let payloadFirst = JSON.parse(send.firstCall.args[0]);
-      let payloadSecond = JSON.parse(send.secondCall.args[0]);
-      let payloadThird = JSON.parse(send.thirdCall.args[0]);
-      let payloadLast = JSON.parse(send.lastCall.args[0]);
+      let payloadFirst = JSON.parse(sendSpy.firstCall.args[0]);
+      let payloadSecond = JSON.parse(sendSpy.secondCall.args[0]);
+      let payloadThird = JSON.parse(sendSpy.thirdCall.args[0]);
+      let payloadLast = JSON.parse(sendSpy.lastCall.args[0]);
       payloadFirst.event.eventType.should.equal(4);
       payloadSecond.event.eventType.should.equal(5);
       payloadThird.event.eventType.should.equal(6);

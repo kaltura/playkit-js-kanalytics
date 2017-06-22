@@ -77,6 +77,5 @@ export default class Event {
     this.eventType = eventType;
     this.isFirstInSession = false;
     this.eventTimestamp = new Date().getTime();
-    this.uiconfId = 0;
   }
 }
