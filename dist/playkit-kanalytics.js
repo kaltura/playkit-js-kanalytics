@@ -333,28 +333,34 @@ var Kanalytics = function (_BasePlugin) {
     key: '_playerParams',
     get: function get() {
       if (!this._playerConfParams) {
-        this._playerConfParams = {
+        var playerConfig = this.player.config;
+        var playerConfParams = {
           clientVer: _playkitJs.VERSION,
           referrer: document.referrer,
-          entryId: this.player.config.id,
-          sessionId: "",
-          partnerId: 0,
-          widgetId: "",
-          uiconfId: 0,
-          //TODO: set these properties correctly
-          contextId: 0,
-          featureType: 0,
-          applicationId: "",
-          userId: 0
+          entryId: playerConfig.id,
+          uiconfId: 0
         };
-        var session = this.player.config.session;
+        var session = playerConfig.session;
         if (session) {
-          this._playerConfParams.sessionId = session.id;
-          this._playerConfParams.partnerId = session.partnerID;
-          this._playerConfParams.widgetId = "_" + session.partnerID;
-          this._playerConfParams.uiconfId = session.uiConfID;
+          playerConfParams.sessionId = session.id;
+          playerConfParams.partnerId = session.partnerID;
+          playerConfParams.widgetId = "_" + session.partnerID;
+          playerConfParams.uiconfId = session.uiConfID;
           this._ks = session.ks;
         }
+        if (playerConfig.contextId) {
+          playerConfParams.contextId = playerConfig.contextId;
+        }
+        if (playerConfig.featureType) {
+          playerConfParams.featureType = playerConfig.featureType;
+        }
+        if (playerConfig.applicationId) {
+          playerConfParams.applicationId = playerConfig.applicationId;
+        }
+        if (playerConfig.userId) {
+          playerConfParams.userId = playerConfig.userId;
+        }
+        this._playerConfParams = playerConfParams;
       }
       return this._playerConfParams;
     }
