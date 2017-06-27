@@ -38,10 +38,6 @@ describe('KanalyticsPlugin', function () {
     event.widgetId.should.equal("_" + player.config.session.partnerID);
     event.uiconfId.should.equal(player.config.session.uiConfID);
     event.entryId.should.equal(player.config.id);
-    event.contextId.should.equal(0);
-    event.featureType.should.equal(0);
-    event.applicationId.should.equal('');
-    event.userId.should.equal(0);
     event.referrer.should.equal(document.referrer);
   }
 
