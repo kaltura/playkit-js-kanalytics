@@ -7,7 +7,7 @@
 		exports["PlaykitJsKAnalytics"] = factory(require("playkit-js"));
 	else
 		root["PlaykitJsKAnalytics"] = factory(root["Playkit"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_3__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -43,6 +43,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -70,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -83,306 +86,144 @@ return /******/ (function(modules) { // webpackBootstrap
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var EVENT_TYPES = {
+  MEDIA_LOADED: 2,
+  PLAY: 3,
+  PLAY_REACHED_25: 4,
+  PLAY_REACHED_50: 5,
+  PLAY_REACHED_75: 6,
+  PLAY_REACHED_100: 7,
+  OPEN_EDIT: 8,
+  OPEN_VIRAL: 9,
+  OPEN_DOWNLOAD: 10,
+  OPEN_REPORT: 11,
+  OPEN_FULL_SCREEN: 14,
+  CLOSE_FULL_SCREEN: 15,
+  REPLAY: 16,
+  SEEK: 17,
+  OPEN_UPLOAD: 18,
+  SAVE_PUBLISH: 19,
+  CLOSE_EDITOR: 20,
+  PRE_BUMPER_PLAYED: 21,
+  POST_BUMPER_PLAYED: 22,
+  BUMPER_CLICKED: 23,
+  PREROLL_STARTED: 24,
+  MIDROLL_STARTED: 25,
+  POSTROLL_STARTED: 26,
+  OVERLAY_STARTED: 27,
+  PREROLL_CLICKED: 28,
+  MIDROLL_CLICKED: 29,
+  POSTROLL_CLICKED: 30,
+  OVERLAY_CLICKED: 31,
+  PREROLL_25: 32,
+  PREROLL_50: 33,
+  PREROLL_75: 34,
+  MIDROLL_25: 35,
+  MIDROLL_50: 36,
+  MIDROLL_75: 37,
+  POSTROLL_25: 38,
+  POSTROLL_50: 39,
+  POSTROLL_75: 40
+};
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _playkitJs = __webpack_require__(1);
-
-var _statsService = __webpack_require__(2);
-
-var _statsService2 = _interopRequireDefault(_statsService);
-
-var _eventTypes = __webpack_require__(3);
-
-var _eventTypes2 = _interopRequireDefault(_eventTypes);
-
-var _event = __webpack_require__(4);
-
-var _event2 = _interopRequireDefault(_event);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var pluginName = "kanalytics";
-var SEEK_OFFSET = 2000;
-
-/**
- * @classdesc
- */
-
-var Kanalytics = function (_BasePlugin) {
-  _inherits(Kanalytics, _BasePlugin);
-
-  _createClass(Kanalytics, null, [{
-    key: 'isValid',
-
-
-    /**
-     * @static
-     * @public
-     * @returns {boolean} - Whether the plugin is valid.
-     */
-    value: function isValid() {
-      return true;
-    }
-
-    /**
-     * The time of the last seek event
-     * @private
-     */
-
-    /**
-     * Whether seeking occurred
-     * @private
-     */
-
-    /**
-     * Indicate whether time percent event already sent
-     * @private
-     */
-
-    /**
-     * The player params which relevant to analytics request
-     * @private
-     */
-
-    /**
-     * The Kaltura session
-     * @private
-     */
-
-    /**
-     * @static
-     */
-
-  }]);
-
-  /**
-   * @constructor
-   * @param {string} name - The plugin name.
-   * @param {Player} player - The player reference.
-   * @param {Object} config - The plugin configuration.
-   */
-  function Kanalytics(name, player, config) {
-    _classCallCheck(this, Kanalytics);
-
-    var _this = _possibleConstructorReturn(this, (Kanalytics.__proto__ || Object.getPrototypeOf(Kanalytics)).call(this, name, player, config));
-
-    _this._initializeMembers();
-    _this._registerListeners();
-    return _this;
-  }
-
-  /**
-   * @public
-   * @return {void}
-   */
-
-
-  _createClass(Kanalytics, [{
-    key: 'destroy',
-    value: function destroy() {
-      this.eventManager.destroy();
-    }
-
-    /**
-     * Register the player event listeners
-     * @private
-     * @return {void}
-     */
-
-  }, {
-    key: '_registerListeners',
-    value: function _registerListeners() {
-      var PlayerEvent = this.player.Event;
-      this.eventManager.listen(this.player, PlayerEvent.FIRST_PLAY, this._sendAnalytics.bind(this, _eventTypes2.default.PLAY));
-      this.eventManager.listen(this.player, PlayerEvent.PLAY, this._onPlay.bind(this));
-      this.eventManager.listen(this.player, PlayerEvent.ENDED, this._onEnded.bind(this));
-      this.eventManager.listen(this.player, PlayerEvent.SEEKED, this._sendSeekAnalytic.bind(this));
-      this.eventManager.listen(this.player, PlayerEvent.TIME_UPDATE, this._sendTimePercentAnalytic.bind(this));
-    }
-
-    /**
-     * The play event listener
-     * @private
-     * @return {void}
-     */
-
-  }, {
-    key: '_onPlay',
-    value: function _onPlay() {
-      if (this._ended) {
-        this._ended = false;
-        this._sendAnalytics(_eventTypes2.default.REPLAY);
-      }
-    }
-
-    /**
-     * The ended event listener
-     * @private
-     * @return {void}
-     */
-
-  }, {
-    key: '_onEnded',
-    value: function _onEnded() {
-      this._ended = true;
-    }
-
-    /**
-     * Send seek analytic
-     * @private
-     * @return {void}
-     */
-
-  }, {
-    key: '_sendSeekAnalytic',
-    value: function _sendSeekAnalytic() {
-      var now = new Date().getTime();
-      if (this._lastSeekEvent === 0 || this._lastSeekEvent + SEEK_OFFSET < now) {
-        // avoid sending lots of seeking while scrubbing
-        this._sendAnalytics(_eventTypes2.default.SEEK);
-      }
-      this._lastSeekEvent = now;
-      this._hasSeeked = true;
-    }
-
-    /**
-     * Send time percent analytic
-     * @private
-     * @return {void}
-     */
-
-  }, {
-    key: '_sendTimePercentAnalytic',
-    value: function _sendTimePercentAnalytic() {
-      var percent = this.player.currentTime / this.player.duration;
-      if (!this._timePercentEvent.PLAY_REACHED_25 && percent >= .25) {
-        this._timePercentEvent.PLAY_REACHED_25 = true;
-        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_25);
-      }
-      if (!this._timePercentEvent.PLAY_REACHED_50 && percent >= .50) {
-        this._timePercentEvent.PLAY_REACHED_50 = true;
-        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_50);
-      }
-      if (!this._timePercentEvent.PLAY_REACHED_75 && percent >= .75) {
-        this._timePercentEvent.PLAY_REACHED_75 = true;
-        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_75);
-      }
-      if (!this._timePercentEvent.PLAY_REACHED_100 && percent >= .98) {
-        this._timePercentEvent.PLAY_REACHED_100 = true;
-        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_100);
-      }
-    }
-
-    /**
-     * Get the player params which relevant to analytics request
-     * @private
-     * @return {Object} - The player params
-     */
-
-  }, {
-    key: '_sendAnalytics',
-
-
-    /**
-     * Register the player event listeners
-     * @param {number} eventType - The event type
-     * @private
-     * @return {void}
-     */
-    value: function _sendAnalytics(eventType) {
-      var _this2 = this;
-
-      var statsEvent = new _event2.default(eventType);
-      statsEvent.currentPoint = this.player.currentTime;
-      statsEvent.duration = this.player.duration;
-      statsEvent.seek = this._hasSeeked;
-      Object.assign(statsEvent, this._playerParams);
-
-      var request = _statsService2.default.collect(this._ks, { "event": statsEvent });
-      request.doHttpRequest().then(function () {
-        _this2.logger.debug('Analytics event sent ', statsEvent);
-      }, function (err) {
-        _this2.logger.error('Failed to send analytics event ', statsEvent, err);
-      });
-    }
-
-    /**
-     * Initialize the plugin members
-     * @private
-     * @return {void}
-     */
-
-  }, {
-    key: '_initializeMembers',
-    value: function _initializeMembers() {
-      this._playerConfParams = null;
-      this._ks = "";
-      this._ended = false;
-      this._timePercentEvent = {};
-      this._lastSeekEvent = 0;
-      this._hasSeeked = false;
-    }
-  }, {
-    key: '_playerParams',
-    get: function get() {
-      if (!this._playerConfParams) {
-        var playerConfig = this.player.config;
-        var playerConfParams = {
-          clientVer: _playkitJs.VERSION,
-          referrer: document.referrer,
-          entryId: playerConfig.id,
-          uiconfId: 0
-        };
-        var session = playerConfig.session;
-        if (session) {
-          playerConfParams.sessionId = session.id;
-          playerConfParams.partnerId = session.partnerID;
-          playerConfParams.widgetId = "_" + session.partnerID;
-          playerConfParams.uiconfId = session.uiConfID;
-          this._ks = session.ks;
-        }
-        if (playerConfig.contextId) {
-          playerConfParams.contextId = playerConfig.contextId;
-        }
-        if (playerConfig.featureType) {
-          playerConfParams.featureType = playerConfig.featureType;
-        }
-        if (playerConfig.applicationId) {
-          playerConfParams.applicationId = playerConfig.applicationId;
-        }
-        if (playerConfig.userId) {
-          playerConfParams.userId = playerConfig.userId;
-        }
-        this._playerConfParams = playerConfParams;
-      }
-      return this._playerConfParams;
-    }
-  }]);
-
-  return Kanalytics;
-}(_playkitJs.BasePlugin);
-
-/**
- * Register the plugin in the playkit-js plugin framework.
- */
-
-
-Kanalytics.defaultConfig = {};
-exports.default = Kanalytics;
-(0, _playkitJs.registerPlugin)(pluginName, Kanalytics);
+exports.default = EVENT_TYPES;
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Event =
+
+/**
+ * @constructor
+ * @param {number} eventType - The event type
+ */
+
+/**
+ * The context id
+ */
+
+/**
+ * Whether the event is thrown for the first video in the session
+ */
+
+/**
+ * Whether the user ever used seek in this session
+ */
+
+/**
+ * The timestamp along the video when the event happened
+ */
+
+/**
+ * The uiconf id
+ */
+
+/**
+ * The entry id
+ */
+
+/**
+ * The session id. A unique string generated by the client that will represent the client-side session
+ * */
+
+/**
+ * The event type
+ */
+function Event(eventType) {
+  _classCallCheck(this, Event);
+
+  this.eventType = eventType;
+  this.isFirstInSession = false;
+  this.eventTimestamp = new Date().getTime();
+}
+/**
+ * The feature type
+ */
+
+/**
+ * The kaltura application name
+ */
+
+/**
+ * The referrer of the client
+ */
+
+/**
+ * The duration of the video in milliseconds
+ */
+
+/**
+ * The partner's user id
+ */
+
+/**
+ * The widget id
+ */
+
+/**
+ * The partner id
+ */
+
+/**
+ * The client's timestamp of this event
+ */
+
+/**
+ * The client version
+ */
+;
+
+exports.default = Event;
 
 /***/ }),
 /* 2 */
@@ -463,7 +304,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 35);
+/******/ 	return __webpack_require__(__webpack_require__.s = 36);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -716,7 +557,7 @@ exports.default = OvpService;
 
 /***/ }),
 
-/***/ 35:
+/***/ 36:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1379,55 +1220,9 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var EVENT_TYPES = {
-  MEDIA_LOADED: 2,
-  PLAY: 3,
-  PLAY_REACHED_25: 4,
-  PLAY_REACHED_50: 5,
-  PLAY_REACHED_75: 6,
-  PLAY_REACHED_100: 7,
-  OPEN_EDIT: 8,
-  OPEN_VIRAL: 9,
-  OPEN_DOWNLOAD: 10,
-  OPEN_REPORT: 11,
-  OPEN_FULL_SCREEN: 14,
-  CLOSE_FULL_SCREEN: 15,
-  REPLAY: 16,
-  SEEK: 17,
-  OPEN_UPLOAD: 18,
-  SAVE_PUBLISH: 19,
-  CLOSE_EDITOR: 20,
-  PRE_BUMPER_PLAYED: 21,
-  POST_BUMPER_PLAYED: 22,
-  BUMPER_CLICKED: 23,
-  PREROLL_STARTED: 24,
-  MIDROLL_STARTED: 25,
-  POSTROLL_STARTED: 26,
-  OVERLAY_STARTED: 27,
-  PREROLL_CLICKED: 28,
-  MIDROLL_CLICKED: 29,
-  POSTROLL_CLICKED: 30,
-  OVERLAY_CLICKED: 31,
-  PREROLL_25: 32,
-  PREROLL_50: 33,
-  PREROLL_75: 34,
-  MIDROLL_25: 35,
-  MIDROLL_50: 36,
-  MIDROLL_75: 37,
-  POSTROLL_25: 38,
-  POSTROLL_50: 39,
-  POSTROLL_75: 40
-};
-
-exports.default = EVENT_TYPES;
+module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
 
 /***/ }),
 /* 4 */
@@ -1440,91 +1235,299 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _playkitJs = __webpack_require__(3);
+
+var _statsService = __webpack_require__(2);
+
+var _statsService2 = _interopRequireDefault(_statsService);
+
+var _eventTypes = __webpack_require__(0);
+
+var _eventTypes2 = _interopRequireDefault(_eventTypes);
+
+var _event = __webpack_require__(1);
+
+var _event2 = _interopRequireDefault(_event);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Event =
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var pluginName = "k-analytics";
+var SEEK_OFFSET = 2000;
 
 /**
- * @constructor
- * @param {number} eventType - The event type
+ * @classdesc
  */
 
+var KAnalytics = function (_BasePlugin) {
+  _inherits(KAnalytics, _BasePlugin);
+
+  _createClass(KAnalytics, null, [{
+    key: 'isValid',
+
+
+    /**
+     * @static
+     * @public
+     * @returns {boolean} - Whether the plugin is valid.
+     */
+    value: function isValid() {
+      return true;
+    }
+
+    /**
+     * The time of the last seek event
+     * @private
+     */
+
+    /**
+     * Whether seeking occurred
+     * @private
+     */
+
+    /**
+     * Indicate whether time percent event already sent
+     * @private
+     */
+
+    /**
+     * The player params which relevant to analytics request
+     * @private
+     */
+
+    /**
+     * The Kaltura session
+     * @private
+     */
+
+    /**
+     * @static
+     */
+
+  }]);
+
+  /**
+   * @constructor
+   * @param {string} name - The plugin name.
+   * @param {Player} player - The player reference.
+   * @param {Object} config - The plugin configuration.
+   */
+  function KAnalytics(name, player, config) {
+    _classCallCheck(this, KAnalytics);
+
+    var _this = _possibleConstructorReturn(this, (KAnalytics.__proto__ || Object.getPrototypeOf(KAnalytics)).call(this, name, player, config));
+
+    _this._initializeMembers();
+    _this._registerListeners();
+    return _this;
+  }
+
+  /**
+   * @public
+   * @return {void}
+   */
+
+
+  _createClass(KAnalytics, [{
+    key: 'destroy',
+    value: function destroy() {
+      this.eventManager.destroy();
+    }
+
+    /**
+     * Register the player event listeners
+     * @private
+     * @return {void}
+     */
+
+  }, {
+    key: '_registerListeners',
+    value: function _registerListeners() {
+      var PlayerEvent = this.player.Event;
+      this.eventManager.listen(this.player, PlayerEvent.FIRST_PLAY, this._sendAnalytics.bind(this, _eventTypes2.default.PLAY));
+      this.eventManager.listen(this.player, PlayerEvent.PLAY, this._onPlay.bind(this));
+      this.eventManager.listen(this.player, PlayerEvent.ENDED, this._onEnded.bind(this));
+      this.eventManager.listen(this.player, PlayerEvent.SEEKED, this._sendSeekAnalytic.bind(this));
+      this.eventManager.listen(this.player, PlayerEvent.TIME_UPDATE, this._sendTimePercentAnalytic.bind(this));
+    }
+
+    /**
+     * The play event listener
+     * @private
+     * @return {void}
+     */
+
+  }, {
+    key: '_onPlay',
+    value: function _onPlay() {
+      if (this._ended) {
+        this._ended = false;
+        this._sendAnalytics(_eventTypes2.default.REPLAY);
+      }
+    }
+
+    /**
+     * The ended event listener
+     * @private
+     * @return {void}
+     */
+
+  }, {
+    key: '_onEnded',
+    value: function _onEnded() {
+      this._ended = true;
+    }
+
+    /**
+     * Send seek analytic
+     * @private
+     * @return {void}
+     */
+
+  }, {
+    key: '_sendSeekAnalytic',
+    value: function _sendSeekAnalytic() {
+      var now = new Date().getTime();
+      if (this._lastSeekEvent === 0 || this._lastSeekEvent + SEEK_OFFSET < now) {
+        // avoid sending lots of seeking while scrubbing
+        this._sendAnalytics(_eventTypes2.default.SEEK);
+      }
+      this._lastSeekEvent = now;
+      this._hasSeeked = true;
+    }
+
+    /**
+     * Send time percent analytic
+     * @private
+     * @return {void}
+     */
+
+  }, {
+    key: '_sendTimePercentAnalytic',
+    value: function _sendTimePercentAnalytic() {
+      var percent = this.player.currentTime / this.player.duration;
+      if (!this._timePercentEvent.PLAY_REACHED_25 && percent >= .25) {
+        this._timePercentEvent.PLAY_REACHED_25 = true;
+        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_25);
+      }
+      if (!this._timePercentEvent.PLAY_REACHED_50 && percent >= .50) {
+        this._timePercentEvent.PLAY_REACHED_50 = true;
+        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_50);
+      }
+      if (!this._timePercentEvent.PLAY_REACHED_75 && percent >= .75) {
+        this._timePercentEvent.PLAY_REACHED_75 = true;
+        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_75);
+      }
+      if (!this._timePercentEvent.PLAY_REACHED_100 && percent >= .98) {
+        this._timePercentEvent.PLAY_REACHED_100 = true;
+        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_100);
+      }
+    }
+
+    /**
+     * Get the player params which relevant to analytics request
+     * @private
+     * @return {Object} - The player params
+     */
+
+  }, {
+    key: '_sendAnalytics',
+
+
+    /**
+     * Register the player event listeners
+     * @param {number} eventType - The event type
+     * @private
+     * @return {void}
+     */
+    value: function _sendAnalytics(eventType) {
+      var _this2 = this;
+
+      var statsEvent = new _event2.default(eventType);
+      statsEvent.currentPoint = this.player.currentTime;
+      statsEvent.duration = this.player.duration;
+      statsEvent.seek = this._hasSeeked;
+      Object.assign(statsEvent, this._playerParams);
+
+      var request = _statsService2.default.collect(this._ks, { "event": statsEvent });
+      request.doHttpRequest().then(function () {
+        _this2.logger.debug('Analytics event sent ', statsEvent);
+      }, function (err) {
+        _this2.logger.error('Failed to send analytics event ', statsEvent, err);
+      });
+    }
+
+    /**
+     * Initialize the plugin members
+     * @private
+     * @return {void}
+     */
+
+  }, {
+    key: '_initializeMembers',
+    value: function _initializeMembers() {
+      this._playerConfParams = null;
+      this._ks = "";
+      this._ended = false;
+      this._timePercentEvent = {};
+      this._lastSeekEvent = 0;
+      this._hasSeeked = false;
+    }
+  }, {
+    key: '_playerParams',
+    get: function get() {
+      if (!this._playerConfParams) {
+        var playerConfig = this.player.config;
+        var playerConfParams = {
+          clientVer: _playkitJs.VERSION,
+          referrer: document.referrer,
+          entryId: playerConfig.id,
+          uiconfId: 0
+        };
+        var session = playerConfig.session;
+        if (session) {
+          playerConfParams.sessionId = session.id;
+          playerConfParams.partnerId = session.partnerID;
+          playerConfParams.widgetId = "_" + session.partnerID;
+          playerConfParams.uiconfId = session.uiConfID;
+          this._ks = session.ks;
+        }
+        if (playerConfig.contextId) {
+          playerConfParams.contextId = playerConfig.contextId;
+        }
+        if (playerConfig.featureType) {
+          playerConfParams.featureType = playerConfig.featureType;
+        }
+        if (playerConfig.applicationId) {
+          playerConfParams.applicationId = playerConfig.applicationId;
+        }
+        if (playerConfig.userId) {
+          playerConfParams.userId = playerConfig.userId;
+        }
+        this._playerConfParams = playerConfParams;
+      }
+      return this._playerConfParams;
+    }
+  }]);
+
+  return KAnalytics;
+}(_playkitJs.BasePlugin);
+
 /**
- * The context id
+ * Register the plugin in the playkit-js plugin framework.
  */
 
-/**
- * Whether the event is thrown for the first video in the session
- */
 
-/**
- * Whether the user ever used seek in this session
- */
-
-/**
- * The timestamp along the video when the event happened
- */
-
-/**
- * The uiconf id
- */
-
-/**
- * The entry id
- */
-
-/**
- * The session id. A unique string generated by the client that will represent the client-side session
- * */
-
-/**
- * The event type
- */
-function Event(eventType) {
-  _classCallCheck(this, Event);
-
-  this.eventType = eventType;
-  this.isFirstInSession = false;
-  this.eventTimestamp = new Date().getTime();
-}
-/**
- * The feature type
- */
-
-/**
- * The kaltura application name
- */
-
-/**
- * The referrer of the client
- */
-
-/**
- * The duration of the video in milliseconds
- */
-
-/**
- * The partner's user id
- */
-
-/**
- * The widget id
- */
-
-/**
- * The partner id
- */
-
-/**
- * The client's timestamp of this event
- */
-
-/**
- * The client version
- */
-;
-
-exports.default = Event;
+KAnalytics.defaultConfig = {};
+exports.default = KAnalytics;
+(0, _playkitJs.registerPlugin)(pluginName, KAnalytics);
 
 /***/ })
 /******/ ]);
