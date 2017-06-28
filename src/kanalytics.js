@@ -4,13 +4,13 @@ import StatsService from 'playkit-js-providers/dist/statsService'
 import EventTypes from './event-types'
 import Event from './event'
 
-const pluginName = "kanalytics";
+const pluginName = "k-analytics";
 const SEEK_OFFSET: number = 2000;
 
 /**
  * @classdesc
  */
-export default class Kanalytics extends BasePlugin {
+export default class KAnalytics extends BasePlugin {
   /**
    * @static
    */
@@ -227,4 +227,4 @@ export default class Kanalytics extends BasePlugin {
 /**
  * Register the plugin in the playkit-js plugin framework.
  */
-registerPlugin(pluginName, Kanalytics);
+registerPlugin(pluginName, KAnalytics);
