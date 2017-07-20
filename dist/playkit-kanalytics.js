@@ -1526,7 +1526,7 @@ var KAnalytics = function (_BasePlugin) {
 
 
 KAnalytics.defaultConfig = {
-  beUrl: null
+  beUrl: ''
 };
 exports.default = KAnalytics;
 (0, _playkitJs.registerPlugin)(pluginName, KAnalytics);
