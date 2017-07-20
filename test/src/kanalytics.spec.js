@@ -40,7 +40,7 @@ describe('KAnalyticsPlugin', function () {
         }]
       },
       plugins: {
-        'k-analytics': {}
+        'kanalytics': {}
       }
     };
     TestUtils.createElement('DIV', targetId);
