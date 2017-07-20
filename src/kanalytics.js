@@ -4,7 +4,7 @@ import StatsService from 'playkit-js-providers/dist/statsService'
 import EventTypes from './event-types'
 import Event from './event'
 
-const pluginName = "k-analytics";
+const pluginName = "kanalytics";
 const SEEK_OFFSET: number = 2000;
 
 /**
