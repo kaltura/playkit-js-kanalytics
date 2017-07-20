@@ -1,29 +1,12 @@
 //eslint-disable-next-line no-unused-vars
-import kanalytics from '../../src/kanalytics.js'
-import {playkit, VERSION} from 'playkit-js'
+import KAnalyticsPlugin from '../../src/kanalytics'
+import {loadPlayer, VERSION} from 'playkit-js'
 import * as TestUtils from 'playkit-js/test/src/utils/test-utils'
 
+const targetId = 'player-placeholder_kanalytics.spec';
 
-describe('KanalyticsPlugin', function () {
-  let player, sandbox, sendSpy;
-  let config = {
-    "id": "1_rwbj3j0a",
-    "session": {
-      "partnerID": 1068292,
-      "ks": "NTAwZjViZWZjY2NjNTRkNGEyMjU1MTg4OGE1NmUwNDljZWJkMzk1MXwxMDY4MjkyOzEwNjgyOTI7MTQ5MDE3NjE0NjswOzE0OTAwODk3NDYuMDIyNjswO3ZpZXc6Kix3aWRnZXQ6MTs7",
-      "uiConfID": 123456
-    },
-    "sources": [
-      {
-        "mimetype": "video/mp4",
-        "url": "https://www.w3schools.com/tags/movie.mp4",
-        "id": "1_rwbj3j0a_11311,applehttp"
-      }
-    ],
-    "plugins": {
-      'kanalytics': {}
-    }
-  };
+describe('KAnalyticsPlugin', function () {
+  let player, sandbox, sendSpy, config;
 
   /**
    * @param {string} ks - ks
@@ -41,16 +24,42 @@ describe('KanalyticsPlugin', function () {
     event.referrer.should.equal(document.referrer);
   }
 
-  beforeEach(() => {
-    player = playkit(config);
+  before(function () {
+    config = {
+      id: "1_rwbj3j0a",
+      session: {
+        "partnerID": 1068292,
+        "ks": "NTAwZjViZWZjY2NjNTRkNGEyMjU1MTg4OGE1NmUwNDljZWJkMzk1MXwxMDY4MjkyOzEwNjgyOTI7MTQ5MDE3NjE0NjswOzE0OTAwODk3NDYuMDIyNjswO3ZpZXc6Kix3aWRnZXQ6MTs7",
+        "uiConfID": 123456
+      },
+      sources: {
+        progressive: [{
+          "mimetype": "video/mp4",
+          "url": "https://www.w3schools.com/tags/movie.mp4",
+          "id": "1_rwbj3j0a_11311,applehttp"
+        }]
+      },
+      plugins: {
+        'k-analytics': {}
+      }
+    };
+    TestUtils.createElement('DIV', targetId);
+  });
+
+  beforeEach(function () {
+    player = loadPlayer(targetId, config);
     sandbox = sinon.sandbox.create();
     sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
   });
 
-  afterEach(() => {
+  afterEach(function () {
     sandbox.restore();
     player.destroy();
     TestUtils.removeVideoElementsFromTestPage();
+  });
+
+  after(function () {
+    TestUtils.removeElement(targetId);
   });
 
   it('should send first play', (done) => {

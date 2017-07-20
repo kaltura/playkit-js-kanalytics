@@ -78,8 +78,8 @@
   "keywords": [],
   "license": "AGPL-3.0",
   "dependencies": {
-    "playkit-js": "https://github.com/kaltura/playkit-js.git#develop",
-    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#develop"
+    "playkit-js": "git+https://github.com/kaltura/playkit-js.git#develop",
+    "playkit-js-providers": "git+https://github.com/kaltura/playkit-js-providers.git#develop"
   },
   "repository": {
     "type": "git",
