@@ -14,7 +14,9 @@ export default class KAnalytics extends BasePlugin {
   /**
    * @static
    */
-  static defaultConfig: Object = {};
+  static defaultConfig: Object = {
+    beUrl: null
+  };
 
   /**
    * @static
@@ -199,7 +201,7 @@ export default class KAnalytics extends BasePlugin {
     statsEvent.seek = this._hasSeeked;
     Object.assign(statsEvent, this._playerParams);
 
-    let request: RequestBuilder = StatsService.collect(this._ks, {"event": statsEvent});
+    let request: RequestBuilder = StatsService.collect(this._ks, {"event": statsEvent}, this.config.beUrl);
     request.doHttpRequest()
       .then(() => {
           this.logger.debug(`Analytics event sent `, statsEvent);

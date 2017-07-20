@@ -1456,7 +1456,7 @@ var KAnalytics = function (_BasePlugin) {
       statsEvent.seek = this._hasSeeked;
       Object.assign(statsEvent, this._playerParams);
 
-      var request = _statsService2.default.collect(this._ks, { "event": statsEvent });
+      var request = _statsService2.default.collect(this._ks, { "event": statsEvent }, this.config.beUrl);
       request.doHttpRequest().then(function () {
         _this2.logger.debug('Analytics event sent ', statsEvent);
       }, function (err) {
@@ -1525,7 +1525,9 @@ var KAnalytics = function (_BasePlugin) {
  */
 
 
-KAnalytics.defaultConfig = {};
+KAnalytics.defaultConfig = {
+  beUrl: null
+};
 exports.default = KAnalytics;
 (0, _playkitJs.registerPlugin)(pluginName, KAnalytics);
 
