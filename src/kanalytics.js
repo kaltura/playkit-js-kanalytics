@@ -15,7 +15,7 @@ export default class KAnalytics extends BasePlugin {
    * @static
    */
   static defaultConfig: Object = {
-    beUrl: null
+    beUrl: ''
   };
 
   /**
