@@ -67,21 +67,21 @@
     "karma-webpack": "^2.0.2",
     "mocha": "^3.2.0",
     "mocha-cli": "^1.0.1",
+    "playkit-js": "git+https://github.com/kaltura/playkit-js.git#v0.3.0",
+    "playkit-js-providers": "git+https://github.com/kaltura/playkit-js-providers.git#v1.0.0",
     "pre-push": "^0.1.1",
     "sinon": "^2.0.0",
     "sinon-chai": "^2.8.0",
     "standard-version": "^4.0.0",
     "uglifyjs-webpack-plugin": "^0.4.3",
     "webpack": "latest",
-    "webpack-dev-server": "latest",
-    "playkit-js": "git+https://github.com/kaltura/playkit-js.git#develop",
-    "playkit-js-providers": "git+https://github.com/kaltura/playkit-js-providers.git#develop"
+    "webpack-dev-server": "latest"
   },
   "keywords": [],
   "license": "AGPL-3.0",
   "peerDependencies": {
-    "playkit-js": "git+https://github.com/kaltura/playkit-js.git#develop",
-    "playkit-js-providers": "git+https://github.com/kaltura/playkit-js-providers.git#develop"
+    "playkit-js": "git+https://github.com/kaltura/playkit-js.git#v0.3.0",
+    "playkit-js-providers": "git+https://github.com/kaltura/playkit-js-providers.git#v1.0.0"
   },
   "repository": {
     "type": "git",
