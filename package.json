@@ -74,14 +74,14 @@
     "uglifyjs-webpack-plugin": "^0.4.3",
     "webpack": "latest",
     "webpack-dev-server": "latest",
-    "playkit-js": "git+https://github.com/kaltura/playkit-js.git#develop",
-    "playkit-js-providers": "git+https://github.com/kaltura/playkit-js-providers.git#develop"
+    "playkit-js": "git+https://github.com/kaltura/playkit-js.git#master",
+    "playkit-js-providers": "git+https://github.com/kaltura/playkit-js-providers.git#master"
   },
   "keywords": [],
   "license": "AGPL-3.0",
   "peerDependencies": {
-    "playkit-js": "git+https://github.com/kaltura/playkit-js.git#develop",
-    "playkit-js-providers": "git+https://github.com/kaltura/playkit-js-providers.git#develop"
+    "playkit-js": "git+https://github.com/kaltura/playkit-js.git#master",
+    "playkit-js-providers": "git+https://github.com/kaltura/playkit-js-providers.git#master"
   },
   "repository": {
     "type": "git",
