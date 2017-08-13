@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/kaltura/playkit-js-kanalytics.svg?token=s2ZQw18ukx9Q6ePzDX3F&branch=master)](https://travis-ci.com/kaltura/playkit-js-kanalytics)
 
-PlayKit JS KAnalytics plugin integrates [IMA SDK for HTML5] with the [PlayKit JS Player].
+PlayKit JS KAnalytics plugin integrates Kaltura analytics with the [PlayKit JS Player].
  
 PlayKit JS KAnalytics is written in [ECMAScript6], statically analysed using [Flow] and transpiled in ECMAScript5 using [Babel].
 
