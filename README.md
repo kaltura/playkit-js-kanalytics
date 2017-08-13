@@ -8,10 +8,10 @@ PlayKit JS KAnalytics is written in [ECMAScript6], statically analysed using [Fl
 
 More info about Kaltura Analytics: 
 * [Video-Analytics]
-* [creating and tracking analytics kmc]
+* [Creating and tracking analytics KMC]
 
 [Video-Analytics]: https://corp.kaltura.com/Products/Features/Video-Analytics
-[creating and tracking analytics kmc]: https://knowledge.kaltura.com/creating-and-tracking-analytics-kmc-0
+[Creating and tracking analytics KMC]: https://knowledge.kaltura.com/creating-and-tracking-analytics-kmc-0
 [Flow]: https://flow.org/
 [ECMAScript6]: https://github.com/ericdouglas/ES6-Learning#articles--tutorials
 [Babel]: https://babeljs.io
@@ -50,14 +50,16 @@ Finally, add the bundle as a script tag in your page, and initialize the player
 ```html
 <script type="text/javascript" src="/PATH/TO/FILE/playkit.js"></script>
 <script type="text/javascript" src="/PATH/TO/FILE/playkit-kanalytics.js"></script>
-<div id="videoContainer" style="height:360px;width:640px">
+<div id="videoContainer" style="height:360px; width:640px">
 <script type="text/javascript">
 var config = {
+ ...
  plugins: {
    kanalytics: {
      beUrl: "http://cdnapi.kaltura.com/api_v3/"
    }
  }
+ ...
 };
 var player = playkit.loadPlayer("videoContainer", config);
 player.play();
@@ -68,11 +70,11 @@ player.play();
 
 | Settings 	| Type   	| Required           	| Description                	|
 |----------	|--------	|--------------------	|----------------------------	|
-| beUrl    	| string 	| :white_check_mark: 	| the kaltura API server url 	|
+| beUrl    	| string 	| :white_check_mark: 	| The Kaltura API server url 	|
 
 ## Running the tests
 
-Tests can be run localy via [Karma], which will run on Chrome, Firefox and Safari
+Tests can be run locally via [Karma], which will run on Chrome, Firefox and Safari
 
 [Karma]: https://karma-runner.github.io/1.0/index.html
 ```
