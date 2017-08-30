@@ -63,6 +63,10 @@ export default class KAnalytics extends BasePlugin {
     super(name, player, config);
     this._initializeMembers();
     this._registerListeners();
+    this._sendAnalytics(EventTypes.WIDGET_LOADED);
+    player.ready().then(() => {
+      this._sendAnalytics(EventTypes.MEDIA_LOADED);
+    });
   }
 
   /**
@@ -85,6 +89,7 @@ export default class KAnalytics extends BasePlugin {
     this.eventManager.listen(this.player, PlayerEvent.ENDED, this._onEnded.bind(this));
     this.eventManager.listen(this.player, PlayerEvent.SEEKED, this._sendSeekAnalytic.bind(this));
     this.eventManager.listen(this.player, PlayerEvent.TIME_UPDATE, this._sendTimePercentAnalytic.bind(this));
+    this.eventManager.listen(this.player, PlayerEvent.PLAYER_STATE_CHANGED, this._onPlayerStateChanged.bind(this));
 
   }
 
@@ -107,6 +112,21 @@ export default class KAnalytics extends BasePlugin {
    */
   _onEnded(): void {
     this._ended = true;
+  }
+
+  /**
+   * The player state changed event listener
+   * @param {any} event - the event
+   * @private
+   * @return {void}
+   */
+  _onPlayerStateChanged(event: any): void {
+    if (event.payload.newState === this.player.State.BUFFERING) {
+      this._sendAnalytics(EventTypes.BUFFER_START);
+    }
+    if (event.payload.oldState === this.player.State.BUFFERING) {
+      this._sendAnalytics(EventTypes.BUFFER_END);
+    }
   }
 
   /**
