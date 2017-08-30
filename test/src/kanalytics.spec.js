@@ -16,12 +16,14 @@ describe('KAnalyticsPlugin', function () {
   function verifyPayloadProperties(ks, event) {
     ks.should.equal(player.config.session.ks);
     event.clientVer.should.equal(VERSION);
-    event.duration.should.equal(player.duration);
     event.partnerId.should.equal(player.config.session.partnerID);
     event.widgetId.should.equal("_" + player.config.session.partnerID);
     event.uiconfId.should.equal(player.config.session.uiConfID);
     event.entryId.should.equal(player.config.id);
     event.referrer.should.equal(document.referrer);
+    if (event.duration) {
+      event.duration.should.equal(player.duration);
+    }
   }
 
   before(function () {
@@ -47,9 +49,9 @@ describe('KAnalyticsPlugin', function () {
   });
 
   beforeEach(function () {
-    player = loadPlayer(targetId, config);
     sandbox = sinon.sandbox.create();
     sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
+    player = loadPlayer(targetId, config);
   });
 
   afterEach(function () {
@@ -60,6 +62,24 @@ describe('KAnalyticsPlugin', function () {
 
   after(function () {
     TestUtils.removeElement(targetId);
+  });
+
+  it('should send widget loaded', () => {
+    let payload = JSON.parse(sendSpy.lastCall.args[0]);
+    verifyPayloadProperties(payload.ks, payload.event);
+    payload.event.seek.should.be.false;
+    payload.event.eventType.should.equal(1);
+  });
+
+  it('should send media loaded', (done) => {
+    player.ready().then(() => {
+      let payload = JSON.parse(sendSpy.lastCall.args[0]);
+      verifyPayloadProperties(payload.ks, payload.event);
+      payload.event.seek.should.be.false;
+      payload.event.eventType.should.equal(2);
+      done();
+    });
+    player.load();
   });
 
   it('should send first play', (done) => {
@@ -118,6 +138,26 @@ describe('KAnalyticsPlugin', function () {
     player.load();
   });
 
+  it('should send buffer start', () => {
+    player.dispatchEvent({type: player.Event.PLAYER_STATE_CHANGED, payload:{
+      'newState': player.State.BUFFERING
+    }});
+    let payload = JSON.parse(sendSpy.lastCall.args[0]);
+    verifyPayloadProperties(payload.ks, payload.event);
+    payload.event.seek.should.be.false;
+    payload.event.eventType.should.equal(12);
+  });
+
+  it('should send buffer end', () => {
+    player.dispatchEvent({type: player.Event.PLAYER_STATE_CHANGED, payload:{
+      'oldState': player.State.BUFFERING
+    }});
+    let payload = JSON.parse(sendSpy.lastCall.args[0]);
+    verifyPayloadProperties(payload.ks, payload.event);
+    payload.event.seek.should.be.false;
+    payload.event.eventType.should.equal(13);
+  });
+
   it('should send 25%', (done) => {
     player.addEventListener(player.Event.LOADED_METADATA, () => {
       player.currentTime = 4;
@@ -171,20 +211,22 @@ describe('KAnalyticsPlugin', function () {
   });
 
   it('should send 25% - 100%', (done) => {
+    let onTimeUpdate = () => {
+      player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
+      let payload25 = JSON.parse(sendSpy.getCall(1).args[0]);
+      let payload50 = JSON.parse(sendSpy.getCall(2).args[0]);
+      let payload75 = JSON.parse(sendSpy.getCall(3).args[0]);
+      let payload100 = JSON.parse(sendSpy.getCall(4).args[0]);
+      payload25.event.eventType.should.equal(4);
+      payload50.event.eventType.should.equal(5);
+      payload75.event.eventType.should.equal(6);
+      payload100.event.eventType.should.equal(7);
+      done();
+    };
     player.addEventListener(player.Event.LOADED_METADATA, () => {
       player.currentTime = 12.5;
     });
-    player.addEventListener(player.Event.TIME_UPDATE, () => {
-      let payloadFirst = JSON.parse(sendSpy.firstCall.args[0]);
-      let payloadSecond = JSON.parse(sendSpy.secondCall.args[0]);
-      let payloadThird = JSON.parse(sendSpy.thirdCall.args[0]);
-      let payloadLast = JSON.parse(sendSpy.lastCall.args[0]);
-      payloadFirst.event.eventType.should.equal(4);
-      payloadSecond.event.eventType.should.equal(5);
-      payloadThird.event.eventType.should.equal(6);
-      payloadLast.event.eventType.should.equal(7);
-      done();
-    });
+    player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
     player.load();
   });
 });

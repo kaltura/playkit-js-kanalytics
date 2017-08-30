@@ -1,5 +1,6 @@
 //@flow
 const EVENT_TYPES: { [event: string]: number } = {
+  WIDGET_LOADED: 1,
   MEDIA_LOADED: 2,
   PLAY: 3,
   PLAY_REACHED_25: 4,
@@ -10,6 +11,8 @@ const EVENT_TYPES: { [event: string]: number } = {
   OPEN_VIRAL: 9,
   OPEN_DOWNLOAD: 10,
   OPEN_REPORT: 11,
+  BUFFER_START: 12,
+  BUFFER_END: 13,
   OPEN_FULL_SCREEN: 14,
   CLOSE_FULL_SCREEN: 15,
   REPLAY: 16,
