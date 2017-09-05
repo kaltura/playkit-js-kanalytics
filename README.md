@@ -55,8 +55,8 @@ Finally, add the bundle as a script tag in your page, and initialize the player
 var config = {
  ...
  plugins: {
-   kanalytics: {
-      baseUrl: 'http://stats.kaltura.com/api_v3/index.php'
+   kanalytics: { 
+     baseUrl: 'http://stats.kaltura.com/api_v3/index.php'
    }
  }
  ...
