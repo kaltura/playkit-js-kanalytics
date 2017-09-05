@@ -210,7 +210,7 @@ describe('KAnalyticsPlugin', function () {
     player.load();
   });
 
-  it.only('should send 25% - 100%', (done) => {
+  it('should send 25% - 100%', (done) => {
     let onTimeUpdate = () => {
       player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
       let payload25 = JSON.parse(sendSpy.getCall(1).args[0]);
