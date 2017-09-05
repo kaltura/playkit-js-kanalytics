@@ -56,7 +56,7 @@ var config = {
  ...
  plugins: {
    kanalytics: {
-     beUrl: "http://cdnapi.kaltura.com/api_v3/"
+      baseUrl: 'http://stats.kaltura.com/api_v3/index.php'
    }
  }
  ...
@@ -70,7 +70,7 @@ player.play();
 
 | Settings 	| Type   	| Required           	| Description                	|
 |----------	|--------	|--------------------	|----------------------------	|
-| beUrl    	| string 	| :white_check_mark: 	| The Kaltura API server url 	|
+| baseUrl    	| string 	| :white_check_mark: 	| The Kaltura API server url 	|
 
 ## Running the tests
 
