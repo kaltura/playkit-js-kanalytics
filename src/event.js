@@ -68,6 +68,10 @@ export default class Event {
    * The feature type
    */
   featureType: number;
+  /**
+   * Whether kanalony plugin is enabled
+   */
+  hasKanalony: boolean;
 
   /**
    * @constructor
