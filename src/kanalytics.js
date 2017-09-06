@@ -15,7 +15,8 @@ export default class KAnalytics extends BasePlugin {
    * @static
    */
   static defaultConfig: Object = {
-    beUrl: ''
+    baseUrl: 'http://stats.kaltura.com/api_v3/index.php',
+    hasKanalony: false
   };
 
   /**
@@ -219,9 +220,10 @@ export default class KAnalytics extends BasePlugin {
     statsEvent.currentPoint = this.player.currentTime;
     statsEvent.duration = this.player.duration;
     statsEvent.seek = this._hasSeeked;
+    statsEvent.hasKanalony = this.config.hasKanalony;
     Object.assign(statsEvent, this._playerParams);
 
-    let request: RequestBuilder = StatsService.collect(this._ks, {"event": statsEvent}, this.config.beUrl);
+    let request: RequestBuilder = StatsService.collect(this._ks, {"event": statsEvent}, this.config.baseUrl);
     request.doHttpRequest()
       .then(() => {
           this.logger.debug(`Analytics event sent `, statsEvent);
