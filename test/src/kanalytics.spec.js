@@ -224,9 +224,9 @@ describe('KAnalyticsPlugin', function () {
       done();
     };
     player.addEventListener(player.Event.LOADED_METADATA, () => {
+      player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
       player.currentTime = 12.5;
     });
-    player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
     player.load();
   });
 });
