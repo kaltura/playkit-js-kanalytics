@@ -1,5 +1,5 @@
 //@flow
-import {BasePlugin, registerPlugin, VERSION} from 'playkit-js'
+import {BasePlugin, registerPlugin} from 'playkit-js'
 import StatsService from 'playkit-js-providers/dist/statsService'
 import EventTypes from './event-types'
 import Event from './event'
@@ -43,11 +43,6 @@ export default class KAnalytics extends BasePlugin {
    * @private
    */
   _timePercentEvent: { [event: string]: boolean };
-  /**
-   * The player params which relevant to analytics request
-   * @private
-   */
-  _playerConfParams: ?Object;
   /**
    * The Kaltura session
    * @private
@@ -176,37 +171,16 @@ export default class KAnalytics extends BasePlugin {
    * @return {Object} - The player params
    */
   get _playerParams(): Object {
-    if (!this._playerConfParams) {
-      let playerConfig = this.player.config;
-      let playerConfParams: Object = {
-        clientVer: VERSION,
-        referrer: document.referrer,
-        entryId: playerConfig.id,
-        uiconfId: 0
-      };
-      let session = playerConfig.session;
-      if (session) {
-        playerConfParams.sessionId = session.id;
-        playerConfParams.partnerId = session.partnerID;
-        playerConfParams.widgetId = "_" + session.partnerID;
-        playerConfParams.uiconfId = session.uiConfID;
-        this._ks = session.ks;
-      }
-      if (playerConfig.contextId) {
-        playerConfParams.contextId = playerConfig.contextId;
-      }
-      if (playerConfig.featureType) {
-        playerConfParams.featureType = playerConfig.featureType;
-      }
-      if (playerConfig.applicationId) {
-        playerConfParams.applicationId = playerConfig.applicationId;
-      }
-      if (playerConfig.userId) {
-        playerConfParams.userId = playerConfig.userId;
-      }
-      this._playerConfParams = playerConfParams;
-    }
-    return this._playerConfParams;
+    this._ks = this.config.ks;
+    return {
+      clientVer: this.config.playerVersion,
+      entryId: this.config.entryId,
+      sessionId: this.config.sessionId,
+      uiConfId: this.config.uiConfId || 0,
+      partnerId: this.config.partnerId,
+      widgetId: this.config.partnerId ? "_" + this.config.partnerId : "",
+      referrer: document.referrer
+    };
   }
 
   /**
@@ -239,7 +213,6 @@ export default class KAnalytics extends BasePlugin {
    * @return {void}
    */
   _initializeMembers(): void {
-    this._playerConfParams = null;
     this._ks = "";
     this._ended = false;
     this._timePercentEvent = {};
