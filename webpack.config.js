@@ -12,7 +12,7 @@ module.exports = {
     filename: '[name].js',
     library: "PlaykitJsKAnalytics",
     libraryTarget: "umd",
-    devtoolModuleFilenameTemplate: "webpack:///kanalytics/[resource-path]",
+    devtoolModuleFilenameTemplate: "./kanalytics/[resource-path]",
   },
   devtool: 'source-map',
   plugins: PROD ? [new webpack.optimize.UglifyJsPlugin({sourceMap: true})] : [],
