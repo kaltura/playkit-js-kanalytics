@@ -1,12 +1,12 @@
 //eslint-disable-next-line no-unused-vars
 import KAnalyticsPlugin from '../../src/kanalytics'
-import {loadPlayer, VERSION} from 'playkit-js'
+import {loadPlayer} from 'playkit-js'
 import * as TestUtils from 'playkit-js/test/src/utils/test-utils'
-
-const targetId = 'player-placeholder_kanalytics.spec';
 
 describe('KAnalyticsPlugin', function () {
   let player, sandbox, sendSpy, config;
+
+  const playerVersion = '1.2.3';
 
   /**
    * @param {string} ks - ks
@@ -15,10 +15,10 @@ describe('KAnalyticsPlugin', function () {
    */
   function verifyPayloadProperties(ks, event) {
     ks.should.equal(player.config.session.ks);
-    event.clientVer.should.equal(VERSION);
+    event.clientVer.should.equal(playerVersion);
     event.partnerId.should.equal(player.config.session.partnerID);
     event.widgetId.should.equal("_" + player.config.session.partnerID);
-    event.uiconfId.should.equal(player.config.session.uiConfID);
+    event.uiConfId.should.equal(player.config.session.uiConfID);
     event.entryId.should.equal(player.config.id);
     event.referrer.should.equal(document.referrer);
     event.hasKanalony.should.be.false;
@@ -43,26 +43,29 @@ describe('KAnalyticsPlugin', function () {
         }]
       },
       plugins: {
-        'kanalytics': {}
+        'kanalytics': {
+          playerVersion: playerVersion,
+          entryId: "1_rwbj3j0a",
+          entryType: "vod",
+          sessionId: "7296b4fd-3fcb-666d-51fc-34065579334c",
+          uiConfId: 123456,
+          ks: "NTAwZjViZWZjY2NjNTRkNGEyMjU1MTg4OGE1NmUwNDljZWJkMzk1MXwxMDY4MjkyOzEwNjgyOTI7MTQ5MDE3NjE0NjswOzE0OTAwODk3NDYuMDIyNjswO3ZpZXc6Kix3aWRnZXQ6MTs7",
+          partnerId: 1068292
+        }
       }
     };
-    TestUtils.createElement('DIV', targetId);
   });
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
     sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
-    player = loadPlayer(targetId, config);
+    player = loadPlayer(config);
   });
 
   afterEach(function () {
     sandbox.restore();
     player.destroy();
     TestUtils.removeVideoElementsFromTestPage();
-  });
-
-  after(function () {
-    TestUtils.removeElement(targetId);
   });
 
   it('should send widget loaded', () => {
