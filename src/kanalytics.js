@@ -197,7 +197,7 @@ export default class KAnalytics extends BasePlugin {
     statsEvent.hasKanalony = this.config.hasKanalony;
     Object.assign(statsEvent, this._playerParams);
 
-    let request: RequestBuilder = StatsService.collect(this._ks, {"event": statsEvent}, this.config.baseUrl);
+    let request: RequestBuilder = StatsService.collect(this.config.playerVersion, this._ks, {"event": statsEvent}, this.config.baseUrl);
     request.doHttpRequest()
       .then(() => {
           this.logger.debug(`Analytics event sent `, statsEvent);
