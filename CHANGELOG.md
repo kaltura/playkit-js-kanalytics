@@ -2,13 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.1.1...v0.4.0) (2017-09-26)
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.1.1...v0.3.0) (2017-09-07)
-
-
-### Features
-
-* analytics enhancement ([#11](https://github.com/kaltura/playkit-js-kanalytics/issues/11)) ([171aa97](https://github.com/kaltura/playkit-js-kanalytics/commit/171aa97))
 
 
 
