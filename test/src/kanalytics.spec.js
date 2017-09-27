@@ -144,7 +144,9 @@ describe('KAnalyticsPlugin', function () {
 
   it('should send buffer start', () => {
     player.dispatchEvent({type: player.Event.PLAYER_STATE_CHANGED, payload:{
-      'newState': player.State.BUFFERING
+      'newState': {
+        'type': player.State.BUFFERING
+      }
     }});
     let payload = sendSpy.lastCall.args[0];
     verifyPayloadProperties(payload.ks, payload.event);
@@ -154,7 +156,12 @@ describe('KAnalyticsPlugin', function () {
 
   it('should send buffer end', () => {
     player.dispatchEvent({type: player.Event.PLAYER_STATE_CHANGED, payload:{
-      'oldState': player.State.BUFFERING
+      'newState': {
+        'type': ""
+      },
+      'oldState': {
+        'type': player.State.BUFFERING
+      }
     }});
     let payload = sendSpy.lastCall.args[0];
     verifyPayloadProperties(payload.ks, payload.event);
