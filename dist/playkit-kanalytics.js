@@ -244,10 +244,10 @@ var KAnalytics = function (_BasePlugin) {
   }, {
     key: '_onPlayerStateChanged',
     value: function _onPlayerStateChanged(event) {
-      if (event.payload.newState === this.player.State.BUFFERING) {
+      if (event.payload.newState.type === this.player.State.BUFFERING) {
         this._sendAnalytics(_eventTypes2.default.BUFFER_START);
       }
-      if (event.payload.oldState === this.player.State.BUFFERING) {
+      if (event.payload.oldState.type === this.player.State.BUFFERING) {
         this._sendAnalytics(_eventTypes2.default.BUFFER_END);
       }
     }
