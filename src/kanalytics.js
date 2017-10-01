@@ -32,22 +32,27 @@ export default class KAnalytics extends BasePlugin {
    * The time of the last seek event
    * @private
    */
-  _lastSeekEvent: number;
+  _lastSeekEvent: number = 0;
   /**
    * Whether seeking occurred
    * @private
    */
-  _hasSeeked: boolean;
+  _hasSeeked: boolean = false;
   /**
-   * Indicate whether time percent event already sent
+   * The ended flag
    * @private
    */
-  _timePercentEvent: { [event: string]: boolean };
+  _ended: boolean = false;
   /**
    * The Kaltura session
    * @private
    */
-  _ks: string;
+  _ks: string = "";
+  /**
+   * Indicate whether time percent event already sent
+   * @private
+   */
+  _timePercentEvent: { [event: string]: boolean } = {};
 
   /**
    * @constructor
@@ -57,12 +62,19 @@ export default class KAnalytics extends BasePlugin {
    */
   constructor(name: string, player: Player, config: Object) {
     super(name, player, config);
-    this._initializeMembers();
     this._registerListeners();
     this._sendAnalytics(EventTypes.WIDGET_LOADED);
-    player.ready().then(() => {
-      this._sendAnalytics(EventTypes.MEDIA_LOADED);
-    });
+  }
+
+  /**
+   * Reset the plugin flags
+   * @return {void}
+   */
+  reset(): void {
+    this._hasSeeked = false;
+    this._ended = false;
+    this._ks = "";
+    this._timePercentEvent = {};
   }
 
   /**
@@ -80,13 +92,24 @@ export default class KAnalytics extends BasePlugin {
    */
   _registerListeners(): void {
     let PlayerEvent = this.player.Event;
+    this.eventManager.listen(this.player, PlayerEvent.SOURCE_SELECTED, this._onSourceSelected.bind(this));
     this.eventManager.listen(this.player, PlayerEvent.FIRST_PLAY, this._sendAnalytics.bind(this, EventTypes.PLAY));
     this.eventManager.listen(this.player, PlayerEvent.PLAY, this._onPlay.bind(this));
     this.eventManager.listen(this.player, PlayerEvent.ENDED, this._onEnded.bind(this));
     this.eventManager.listen(this.player, PlayerEvent.SEEKED, this._sendSeekAnalytic.bind(this));
     this.eventManager.listen(this.player, PlayerEvent.TIME_UPDATE, this._sendTimePercentAnalytic.bind(this));
     this.eventManager.listen(this.player, PlayerEvent.PLAYER_STATE_CHANGED, this._onPlayerStateChanged.bind(this));
+  }
 
+  /**
+   * The source selected event listener
+   * @private
+   * @return {void}
+   */
+  _onSourceSelected(): void {
+    this.player.ready().then(() => {
+      this._sendAnalytics(EventTypes.MEDIA_LOADED);
+    });
   }
 
   /**
@@ -132,7 +155,7 @@ export default class KAnalytics extends BasePlugin {
    */
   _sendSeekAnalytic(): void {
     let now = new Date().getTime();
-    if (this._lastSeekEvent === 0 || this._lastSeekEvent + SEEK_OFFSET < now) {
+    if (this._lastSeekEvent + SEEK_OFFSET < now) {
       // avoid sending lots of seeking while scrubbing
       this._sendAnalytics(EventTypes.SEEK);
     }
@@ -205,19 +228,6 @@ export default class KAnalytics extends BasePlugin {
         err => {
           this.logger.error(`Failed to send analytics event `, statsEvent, err);
         });
-  }
-
-  /**
-   * Initialize the plugin members
-   * @private
-   * @return {void}
-   */
-  _initializeMembers(): void {
-    this._ks = "";
-    this._ended = false;
-    this._timePercentEvent = {};
-    this._lastSeekEvent = 0;
-    this._hasSeeked = false;
   }
 }
 

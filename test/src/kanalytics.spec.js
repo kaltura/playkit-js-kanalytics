@@ -4,36 +4,24 @@ import {loadPlayer} from 'playkit-js'
 import * as TestUtils from 'playkit-js/test/src/utils/test-utils'
 
 describe('KAnalyticsPlugin', function () {
+
   let player, sandbox, sendSpy, config;
 
   const playerVersion = '1.2.3';
-
-  /**
-   * @param {string} ks - ks
-   * @param {Object} event - event
-   * @return {void}
-   */
-  function verifyPayloadProperties(ks, event) {
-    ks.should.equal(player.config.session.ks);
-    event.clientVer.should.equal(playerVersion);
-    event.partnerId.should.equal(player.config.session.partnerID);
-    event.widgetId.should.equal("_" + player.config.session.partnerID);
-    event.uiConfId.should.equal(player.config.session.uiConfID);
-    event.entryId.should.equal(player.config.id);
-    event.referrer.should.equal(document.referrer);
-    event.hasKanalony.should.be.false;
-    if (event.duration) {
-      event.duration.should.equal(player.duration);
-    }
-  }
+  const ks = 'NTAwZjViZWZjY2NjNTRkNGEyMjU1MTg4OGE1NmUwNDljZWJkMzk1MXwxMDY4MjkyOzEwNjgyOTI7MTQ5MDE3NjE0NjswOzE0OTAwODk3NDYuMDIyNjswO3ZpZXc6Kix3aWRnZXQ6MTs7';
+  const type = 'vod';
+  const id = '1_rwbj3j0a';
+  const pId = 1068292;
+  const uId = 123456;
+  const sId = '7296b4fd-3fcb-666d-51fc-34065579334c';
 
   before(function () {
     config = {
-      id: "1_rwbj3j0a",
+      id: id,
       session: {
-        "partnerID": 1068292,
-        "ks": "NTAwZjViZWZjY2NjNTRkNGEyMjU1MTg4OGE1NmUwNDljZWJkMzk1MXwxMDY4MjkyOzEwNjgyOTI7MTQ5MDE3NjE0NjswOzE0OTAwODk3NDYuMDIyNjswO3ZpZXc6Kix3aWRnZXQ6MTs7",
-        "uiConfID": 123456
+        "partnerID": pId,
+        "ks": ks,
+        "uiConfID": uId
       },
       sources: {
         progressive: [{
@@ -45,21 +33,15 @@ describe('KAnalyticsPlugin', function () {
       plugins: {
         'kanalytics': {
           playerVersion: playerVersion,
-          entryId: "1_rwbj3j0a",
-          entryType: "vod",
-          sessionId: "7296b4fd-3fcb-666d-51fc-34065579334c",
-          uiConfId: 123456,
-          ks: "NTAwZjViZWZjY2NjNTRkNGEyMjU1MTg4OGE1NmUwNDljZWJkMzk1MXwxMDY4MjkyOzEwNjgyOTI7MTQ5MDE3NjE0NjswOzE0OTAwODk3NDYuMDIyNjswO3ZpZXc6Kix3aWRnZXQ6MTs7",
-          partnerId: 1068292
+          entryId: id,
+          entryType: type,
+          sessionId: sId,
+          uiConfId: uId,
+          ks: ks,
+          partnerId: pId
         }
       }
     };
-  });
-
-  beforeEach(function () {
-    sandbox = sinon.sandbox.create();
-    sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
-    player = loadPlayer(config);
   });
 
   afterEach(function () {
@@ -68,179 +50,400 @@ describe('KAnalyticsPlugin', function () {
     TestUtils.removeVideoElementsFromTestPage();
   });
 
-  it('should send widget loaded', () => {
-    let payload = sendSpy.lastCall.args[0];
-    verifyPayloadProperties(payload.ks, payload.event);
-    payload.event.seek.should.be.false;
-    payload.event.eventType.should.equal(1);
-  });
+  describe('Basic Playback', function () {
+    /**
+     * @param {string} ks - ks
+     * @param {Object} event - event
+     * @return {void}
+     */
+    function verifyPayloadProperties(ks, event) {
+      ks.should.equal(ks);
+      event.clientVer.should.equal(playerVersion);
+      event.partnerId.should.equal(pId);
+      event.widgetId.should.equal("_" + pId);
+      event.uiConfId.should.equal(uId);
+      event.entryId.should.equal(id);
+      event.referrer.should.equal(document.referrer);
+      event.hasKanalony.should.be.false;
+      if (event.duration) {
+        event.duration.should.equal(12.612);
+      }
+    }
 
-  it('should send media loaded', (done) => {
-    player.ready().then(() => {
+    beforeEach(function () {
+      sandbox = sinon.sandbox.create();
+      sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
+      player = loadPlayer(config);
+    });
+
+    it('should send widget loaded', () => {
       let payload = sendSpy.lastCall.args[0];
       verifyPayloadProperties(payload.ks, payload.event);
       payload.event.seek.should.be.false;
-      payload.event.eventType.should.equal(2);
-      done();
+      payload.event.eventType.should.equal(1);
     });
-    player.load();
-  });
 
-  it('should send first play', (done) => {
-    player.addEventListener(player.Event.FIRST_PLAY, () => {
-      let payload = sendSpy.lastCall.args[0];
-      verifyPayloadProperties(payload.ks, payload.event);
-      payload.event.seek.should.be.false;
-      payload.event.eventType.should.equal(3);
-      done();
-    });
-    player.play();
-  });
-
-  it('should send replay', (done) => {
-    player.addEventListener(player.Event.FIRST_PLAY, () => {
-      player.currentTime = player.duration - 1;
-    });
-    player.addEventListener(player.Event.ENDED, () => {
-      player.addEventListener(player.Event.PLAY, () => {
+    it('should send media loaded', (done) => {
+      player.ready().then(() => {
         let payload = sendSpy.lastCall.args[0];
         verifyPayloadProperties(payload.ks, payload.event);
-        payload.event.seek.should.be.true;
-        payload.event.eventType.should.equal(16);
+        payload.event.seek.should.be.false;
+        payload.event.eventType.should.equal(2);
+        done();
+      });
+      player.load();
+    });
+
+    it('should send first play', (done) => {
+      player.addEventListener(player.Event.FIRST_PLAY, () => {
+        let payload = sendSpy.lastCall.args[0];
+        verifyPayloadProperties(payload.ks, payload.event);
+        payload.event.seek.should.be.false;
+        payload.event.eventType.should.equal(3);
         done();
       });
       player.play();
     });
-    player.play();
-  });
 
-  it('should send seek on playing', (done) => {
-    player.addEventListener(player.Event.FIRST_PLAY, () => {
-      player.currentTime = player.duration / 2;
+    it('should send replay', (done) => {
+      player.addEventListener(player.Event.FIRST_PLAY, () => {
+        player.currentTime = player.duration - 1;
+      });
+      player.addEventListener(player.Event.ENDED, () => {
+        player.addEventListener(player.Event.PLAY, () => {
+          let payload = sendSpy.lastCall.args[0];
+          verifyPayloadProperties(payload.ks, payload.event);
+          payload.event.seek.should.be.true;
+          payload.event.eventType.should.equal(16);
+          done();
+        });
+        player.play();
+      });
+      player.play();
     });
-    player.addEventListener(player.Event.SEEKED, () => {
+
+    it('should send seek on playing', (done) => {
+      player.addEventListener(player.Event.FIRST_PLAY, () => {
+        player.currentTime = player.duration / 2;
+      });
+      player.addEventListener(player.Event.SEEKED, () => {
+        let payload = sendSpy.lastCall.args[0];
+        verifyPayloadProperties(payload.ks, payload.event);
+        payload.event.seek.should.be.false;
+        payload.event.eventType.should.equal(17);
+        done();
+      });
+      player.play();
+    });
+
+    it('should send seek before playing', (done) => {
+      player.addEventListener(player.Event.LOADED_METADATA, () => {
+        player.currentTime = player.duration / 2;
+      });
+      player.addEventListener(player.Event.SEEKED, () => {
+        let payload = sendSpy.lastCall.args[0];
+        verifyPayloadProperties(payload.ks, payload.event);
+        payload.event.seek.should.be.false;
+        payload.event.eventType.should.equal(17);
+        done();
+      });
+      player.load();
+    });
+
+    it('should send buffer start', () => {
+      player.dispatchEvent({
+        type: player.Event.PLAYER_STATE_CHANGED, payload: {
+          'newState': {
+            'type': player.State.BUFFERING
+          },
+          'oldState': {
+            'type': player.State.PLAYING
+          }
+        }
+      });
       let payload = sendSpy.lastCall.args[0];
       verifyPayloadProperties(payload.ks, payload.event);
       payload.event.seek.should.be.false;
-      payload.event.eventType.should.equal(17);
-      done();
+      payload.event.eventType.should.equal(12);
     });
-    player.play();
-  });
 
-  it('should send seek before playing', (done) => {
-    player.addEventListener(player.Event.LOADED_METADATA, () => {
-      player.currentTime = player.duration / 2;
-    });
-    player.addEventListener(player.Event.SEEKED, () => {
+    it('should send buffer end', () => {
+      player.dispatchEvent({
+        type: player.Event.PLAYER_STATE_CHANGED, payload: {
+          'newState': {
+            'type': player.State.PLAYING
+          },
+          'oldState': {
+            'type': player.State.BUFFERING
+          }
+        }
+      });
       let payload = sendSpy.lastCall.args[0];
       verifyPayloadProperties(payload.ks, payload.event);
       payload.event.seek.should.be.false;
-      payload.event.eventType.should.equal(17);
-      done();
+      payload.event.eventType.should.equal(13);
     });
-    player.load();
+
+    it('should send 25%', (done) => {
+      player.addEventListener(player.Event.LOADED_METADATA, () => {
+        player.currentTime = 4;
+      });
+      player.addEventListener(player.Event.TIME_UPDATE, () => {
+        let payload = sendSpy.lastCall.args[0];
+        verifyPayloadProperties(payload.ks, payload.event);
+        payload.event.eventType.should.equal(4);
+        done();
+      });
+      player.load();
+    });
+
+    it('should send 50%', (done) => {
+      player.addEventListener(player.Event.LOADED_METADATA, () => {
+        player.currentTime = 7;
+      });
+      player.addEventListener(player.Event.TIME_UPDATE, () => {
+        let payload = sendSpy.lastCall.args[0];
+        verifyPayloadProperties(payload.ks, payload.event);
+        payload.event.eventType.should.equal(5);
+        done();
+      });
+      player.load();
+    });
+
+    it('should send 75%', (done) => {
+      player.addEventListener(player.Event.LOADED_METADATA, () => {
+        player.currentTime = 10;
+      });
+      player.addEventListener(player.Event.TIME_UPDATE, () => {
+        let payload = sendSpy.lastCall.args[0];
+        verifyPayloadProperties(payload.ks, payload.event);
+        payload.event.eventType.should.equal(6);
+        done();
+      });
+      player.load();
+    });
+
+    it('should send 100%', (done) => {
+      player.addEventListener(player.Event.LOADED_METADATA, () => {
+        player.currentTime = 12.5;
+      });
+      player.addEventListener(player.Event.TIME_UPDATE, () => {
+        let payload = sendSpy.lastCall.args[0];
+        verifyPayloadProperties(payload.ks, payload.event);
+        payload.event.eventType.should.equal(7);
+        done();
+      });
+      player.load();
+    });
+
+    it('should send 25% - 100%', (done) => {
+      let onTimeUpdate = () => {
+        player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
+        let payload25 = sendSpy.getCall(1).args[0];
+        let payload50 = sendSpy.getCall(2).args[0];
+        let payload75 = sendSpy.getCall(3).args[0];
+        let payload100 = sendSpy.getCall(4).args[0];
+        payload25.event.eventType.should.equal(4);
+        payload50.event.eventType.should.equal(5);
+        payload75.event.eventType.should.equal(6);
+        payload100.event.eventType.should.equal(7);
+        done();
+      };
+      player.addEventListener(player.Event.LOADED_METADATA, () => {
+        player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
+        player.currentTime = 12.5;
+      });
+      player.load();
+    });
+
+    it('should not send 25% - 100% again while replay', (done) => {
+      player.addEventListener(player.Event.FIRST_PLAY, () => {
+        player.currentTime = player.duration - 1;
+      });
+      player.addEventListener(player.Event.ENDED, () => {
+        player.addEventListener(player.Event.PLAY, () => {
+          let onTimeUpdate = () => {
+            player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
+            let payload = sendSpy.lastCall.args[0];
+            payload.event.eventType.should.equal(16);
+            done();
+          };
+          player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
+          player.currentTime = 12.5;
+        });
+        player.play();
+      });
+      player.play();
+    });
   });
 
-  it('should send buffer start', () => {
-    player.dispatchEvent({type: player.Event.PLAYER_STATE_CHANGED, payload:{
-      'newState': {
-        'type': player.State.BUFFERING
+  describe('Change Media', function () {
+
+    const cm_ks = 'MGI3MzFmMmUwN2IyYmYzN2IxOGEzZjFjMTAzM2U4NTg5MTgyY2MyZnwxMDkxOzEwOTE7MTUwNjY5Mjc0MzswOzE1MDY2MDYzNDMuMTE0MjswO3ZpZXc6Kix3aWRnZXQ6MTs7';
+    const cm_type = 'live';
+    const cm_id = '1_fdsguh765';
+    const cm_pId = 2046854;
+    const cm_uId = 654321;
+    const cm_sId = '15282f1c-fff6-4130-3351-cb8bd39f0cdd';
+
+
+    let CMconfig = {
+      id: cm_id,
+      session: {
+        "partnerID": cm_pId,
+        "ks": cm_ks,
+        "uiConfID": cm_uId
       },
-      'oldState': {
-        'type': player.State.PLAYING
-      }
-    }});
-    let payload = sendSpy.lastCall.args[0];
-    verifyPayloadProperties(payload.ks, payload.event);
-    payload.event.seek.should.be.false;
-    payload.event.eventType.should.equal(12);
-  });
-
-  it('should send buffer end', () => {
-    player.dispatchEvent({type: player.Event.PLAYER_STATE_CHANGED, payload:{
-      'newState': {
-        'type': player.State.PLAYING
+      sources: {
+        progressive: [{
+          "mimetype": "video/mp4",
+          "url": "https://www.w3schools.com/tags/movie.mp4",
+          "id": "1_fdsguh765_11311,applehttp"
+        }]
       },
-      'oldState': {
-        'type': player.State.BUFFERING
+      plugins: {
+        kanalytics: {
+          playerVersion: playerVersion,
+          entryId: cm_id,
+          entryType: cm_type,
+          sessionId: cm_sId,
+          uiConfId: 654321,
+          ks: cm_ks,
+          partnerId: 2046854
+        }
       }
-    }});
-    let payload = sendSpy.lastCall.args[0];
-    verifyPayloadProperties(payload.ks, payload.event);
-    payload.event.seek.should.be.false;
-    payload.event.eventType.should.equal(13);
-  });
-
-  it('should send 25%', (done) => {
-    player.addEventListener(player.Event.LOADED_METADATA, () => {
-      player.currentTime = 4;
-    });
-    player.addEventListener(player.Event.TIME_UPDATE, () => {
-      let payload = sendSpy.lastCall.args[0];
-      verifyPayloadProperties(payload.ks, payload.event);
-      payload.event.eventType.should.equal(4);
-      done();
-    });
-    player.load();
-  });
-
-  it('should send 50%', (done) => {
-    player.addEventListener(player.Event.LOADED_METADATA, () => {
-      player.currentTime = 7;
-    });
-    player.addEventListener(player.Event.TIME_UPDATE, () => {
-      let payload = sendSpy.lastCall.args[0];
-      verifyPayloadProperties(payload.ks, payload.event);
-      payload.event.eventType.should.equal(5);
-      done();
-    });
-    player.load();
-  });
-
-  it('should send 75%', (done) => {
-    player.addEventListener(player.Event.LOADED_METADATA, () => {
-      player.currentTime = 10;
-    });
-    player.addEventListener(player.Event.TIME_UPDATE, () => {
-      let payload = sendSpy.lastCall.args[0];
-      verifyPayloadProperties(payload.ks, payload.event);
-      payload.event.eventType.should.equal(6);
-      done();
-    });
-    player.load();
-  });
-
-  it('should send 100%', (done) => {
-    player.addEventListener(player.Event.LOADED_METADATA, () => {
-      player.currentTime = 12.5;
-    });
-    player.addEventListener(player.Event.TIME_UPDATE, () => {
-      let payload = sendSpy.lastCall.args[0];
-      verifyPayloadProperties(payload.ks, payload.event);
-      payload.event.eventType.should.equal(7);
-      done();
-    });
-    player.load();
-  });
-
-  it('should send 25% - 100%', (done) => {
-    let onTimeUpdate = () => {
-      player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-      let payload25 = sendSpy.getCall(1).args[0];
-      let payload50 = sendSpy.getCall(2).args[0];
-      let payload75 = sendSpy.getCall(3).args[0];
-      let payload100 = sendSpy.getCall(4).args[0];
-      payload25.event.eventType.should.equal(4);
-      payload50.event.eventType.should.equal(5);
-      payload75.event.eventType.should.equal(6);
-      payload100.event.eventType.should.equal(7);
-      done();
     };
-    player.addEventListener(player.Event.LOADED_METADATA, () => {
-      player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-      player.currentTime = 12.5;
+
+    /**
+     * @param {string} ks - ks
+     * @param {Object} event - event
+     * @return {void}
+     */
+    function verifyPayloadProperties(ks, event) {
+      ks.should.equal(cm_ks);
+      event.clientVer.should.equal(playerVersion);
+      event.partnerId.should.equal(cm_pId);
+      event.widgetId.should.equal("_" + cm_pId);
+      event.uiConfId.should.equal(cm_uId);
+      event.entryId.should.equal(cm_id);
+      event.referrer.should.equal(document.referrer);
+      event.hasKanalony.should.be.false;
+      if (event.duration) {
+        event.duration.should.equal(12.612);
+      }
+    }
+
+    beforeEach(function () {
+      sandbox = sinon.sandbox.create();
+      sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
+      player = loadPlayer(config);
+      player.ready().then(() => {
+        player.play();
+      });
+      player.load();
     });
-    player.load();
+
+    it('should send media loaded', (done) => {
+      player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
+        player.addEventListener(player.Event.SOURCE_SELECTED, () => {
+          player.ready().then(() => {
+            let payload = sendSpy.lastCall.args[0];
+            verifyPayloadProperties(payload.ks, payload.event);
+            payload.event.seek.should.be.false;
+            payload.event.eventType.should.equal(2);
+            done();
+          });
+          player.load();
+        });
+      });
+      player.configure(CMconfig);
+    });
+
+    it('should send first play', (done) => {
+      player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
+        player.addEventListener(player.Event.SOURCE_SELECTED, () => {
+          player.addEventListener(player.Event.FIRST_PLAY, () => {
+            let payload = sendSpy.lastCall.args[0];
+            verifyPayloadProperties(payload.ks, payload.event);
+            payload.event.seek.should.be.false;
+            payload.event.eventType.should.equal(3);
+            done();
+          });
+          player.play();
+        });
+      });
+      player.configure(CMconfig);
+    });
+
+    it('seek should be false', (done) => {
+      player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
+        player.addEventListener(player.Event.SOURCE_SELECTED, () => {
+          player.addEventListener(player.Event.FIRST_PLAY, () => {
+            let payload = sendSpy.lastCall.args[0];
+            payload.event.seek.should.be.false;
+            done();
+          });
+          player.play();
+        });
+      });
+      let onSeeked = () => {
+        player.removeEventListener(player.Event.SEEKED, onSeeked);
+        player.configure(CMconfig);
+      };
+      player.addEventListener(player.Event.SEEKED, onSeeked);
+      player.currentTime = 5;
+    });
+
+    it('should not send replay if change media on ended', (done) => {
+      player.addEventListener(player.Event.FIRST_PLAY, () => {
+        player.currentTime = player.duration - 1;
+      });
+      player.addEventListener(player.Event.ENDED, () => {
+        player.addEventListener(player.Event.LOADED_METADATA, () => {
+          player.addEventListener(player.Event.PLAY, () => {
+            let payload = sendSpy.getCall(10).args[0];
+            payload.event.eventType.should.not.equal(16);
+            done();
+          });
+          player.play();
+        });
+        player.configure(CMconfig);
+        player.load();
+      });
+    });
+
+    it('should send 25% - 100% again while change media ', (done) => {
+      player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
+        player.addEventListener(player.Event.SOURCE_SELECTED, () => {
+          player.addEventListener(player.Event.LOADED_METADATA, () => {
+            let onTimeUpdate = () => {
+              player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
+              let payload25 = sendSpy.getCall(10).args[0];
+              let payload50 = sendSpy.getCall(11).args[0];
+              let payload75 = sendSpy.getCall(12).args[0];
+              let payload100 = sendSpy.getCall(13).args[0];
+              payload25.event.eventType.should.equal(4);
+              payload50.event.eventType.should.equal(5);
+              payload75.event.eventType.should.equal(6);
+              payload100.event.eventType.should.equal(7);
+              verifyPayloadProperties(payload25.ks, payload25.event);
+              done();
+            };
+            player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
+            player.currentTime = 12.5;
+          });
+        });
+        player.load();
+      });
+
+      player.addEventListener(player.Event.FIRST_PLAY, () => {
+        let onEnded = () => {
+          player.removeEventListener(player.Event.TIME_UPDATE, onEnded);
+          player.configure(CMconfig);
+        };
+        player.addEventListener(player.Event.TIME_UPDATE, onEnded);
+        player.currentTime = player.duration - 1;
+      });
+    });
   });
 });
