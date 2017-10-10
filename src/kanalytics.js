@@ -6,7 +6,7 @@ import Event from './event'
 
 const pluginName = "kanalytics";
 const SEEK_OFFSET: number = 2000;
-const LIVE: number = 'Live';
+const LIVE: string = 'Live';
 
 /**
  * @classdesc
