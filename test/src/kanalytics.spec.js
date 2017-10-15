@@ -142,6 +142,33 @@ describe('KAnalyticsPlugin', function () {
     player.load();
   });
 
+  it('should not send seek for live', (done) => {
+    player._config.type = 'Live';
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      player.currentTime = player.duration / 2;
+    });
+    player.addEventListener(player.Event.SEEKED, () => {
+      let payload = sendSpy.lastCall.args[0];
+      payload.event.eventType.should.not.equal(17);
+      done();
+    });
+    player.play();
+  });
+
+  it('should send seek for live + dvr', (done) => {
+    player._config.type = 'Live';
+    player._config.dvr = true;
+    player.addEventListener(player.Event.FIRST_PLAY, () => {
+      player.currentTime = player.duration / 2;
+    });
+    player.addEventListener(player.Event.SEEKED, () => {
+      let payload = sendSpy.lastCall.args[0];
+      payload.event.eventType.should.equal(17);
+      done();
+    });
+    player.play();
+  });
+
   it('should send buffer start', () => {
     player.dispatchEvent({type: player.Event.PLAYER_STATE_CHANGED, payload:{
       'newState': {
