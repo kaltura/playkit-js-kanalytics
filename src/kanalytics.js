@@ -6,6 +6,7 @@ import Event from './event'
 
 const pluginName = "kanalytics";
 const SEEK_OFFSET: number = 2000;
+const LIVE: string = 'Live';
 
 /**
  * @classdesc
@@ -132,12 +133,12 @@ export default class KAnalytics extends BasePlugin {
    */
   _sendSeekAnalytic(): void {
     let now = new Date().getTime();
-    if (this._lastSeekEvent === 0 || this._lastSeekEvent + SEEK_OFFSET < now) {
+    if ((this._lastSeekEvent + SEEK_OFFSET < now) && (this.player.config.type !== LIVE || this.player.config.dvr)) {
       // avoid sending lots of seeking while scrubbing
       this._sendAnalytics(EventTypes.SEEK);
+      this._hasSeeked = true;
     }
     this._lastSeekEvent = now;
-    this._hasSeeked = true;
   }
 
   /**
@@ -146,22 +147,24 @@ export default class KAnalytics extends BasePlugin {
    * @return {void}
    */
   _sendTimePercentAnalytic(): void {
-    let percent = this.player.currentTime / this.player.duration;
-    if (!this._timePercentEvent.PLAY_REACHED_25 && percent >= .25) {
-      this._timePercentEvent.PLAY_REACHED_25 = true;
-      this._sendAnalytics(EventTypes.PLAY_REACHED_25);
-    }
-    if (!this._timePercentEvent.PLAY_REACHED_50 && percent >= .50) {
-      this._timePercentEvent.PLAY_REACHED_50 = true;
-      this._sendAnalytics(EventTypes.PLAY_REACHED_50);
-    }
-    if (!this._timePercentEvent.PLAY_REACHED_75 && percent >= .75) {
-      this._timePercentEvent.PLAY_REACHED_75 = true;
-      this._sendAnalytics(EventTypes.PLAY_REACHED_75);
-    }
-    if (!this._timePercentEvent.PLAY_REACHED_100 && percent >= .98) {
-      this._timePercentEvent.PLAY_REACHED_100 = true;
-      this._sendAnalytics(EventTypes.PLAY_REACHED_100);
+    if (this.player.config.type !== LIVE) {
+      let percent = this.player.currentTime / this.player.duration;
+      if (!this._timePercentEvent.PLAY_REACHED_25 && percent >= .25) {
+        this._timePercentEvent.PLAY_REACHED_25 = true;
+        this._sendAnalytics(EventTypes.PLAY_REACHED_25);
+      }
+      if (!this._timePercentEvent.PLAY_REACHED_50 && percent >= .50) {
+        this._timePercentEvent.PLAY_REACHED_50 = true;
+        this._sendAnalytics(EventTypes.PLAY_REACHED_50);
+      }
+      if (!this._timePercentEvent.PLAY_REACHED_75 && percent >= .75) {
+        this._timePercentEvent.PLAY_REACHED_75 = true;
+        this._sendAnalytics(EventTypes.PLAY_REACHED_75);
+      }
+      if (!this._timePercentEvent.PLAY_REACHED_100 && percent >= .98) {
+        this._timePercentEvent.PLAY_REACHED_100 = true;
+        this._sendAnalytics(EventTypes.PLAY_REACHED_100);
+      }
     }
   }
 
