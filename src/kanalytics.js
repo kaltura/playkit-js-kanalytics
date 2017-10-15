@@ -133,7 +133,7 @@ export default class KAnalytics extends BasePlugin {
    */
   _sendSeekAnalytic(): void {
     let now = new Date().getTime();
-    if (this._lastSeekEvent + SEEK_OFFSET < now && (this.player.config.type !== LIVE || this.player.config.dvr)) {
+    if ((this._lastSeekEvent + SEEK_OFFSET < now) && (this.player.config.type !== LIVE || this.player.config.dvr)) {
       // avoid sending lots of seeking while scrubbing
       this._sendAnalytics(EventTypes.SEEK);
       this._hasSeeked = true;
