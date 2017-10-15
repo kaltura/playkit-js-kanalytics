@@ -243,4 +243,19 @@ describe('KAnalyticsPlugin', function () {
     });
     player.load();
   });
+
+  it('should not send 25% - 100% for live', (done) => {
+    player._config.type = 'Live';
+    let onTimeUpdate = () => {
+      player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
+      let payload = sendSpy.lastCall.args[0];
+      payload.event.eventType.should.equal(2);
+      done();
+    };
+    player.addEventListener(player.Event.LOADED_DATA, () => {
+      player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
+      player.currentTime = 12.5;
+    });
+    player.load();
+  });
 });
