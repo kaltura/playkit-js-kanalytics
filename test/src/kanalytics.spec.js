@@ -441,10 +441,10 @@ describe('KAnalyticsPlugin', function () {
           player.addEventListener(player.Event.LOADED_METADATA, () => {
             let onTimeUpdate = () => {
               player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-              let payload25 = sendSpy.getCall(10).args[0];
-              let payload50 = sendSpy.getCall(11).args[0];
-              let payload75 = sendSpy.getCall(12).args[0];
-              let payload100 = sendSpy.getCall(13).args[0];
+              let payload25 = sendSpy.getCall(9).args[0];
+              let payload50 = sendSpy.getCall(10).args[0];
+              let payload75 = sendSpy.getCall(11).args[0];
+              let payload100 = sendSpy.getCall(12).args[0];
               payload25.event.eventType.should.equal(4);
               payload50.event.eventType.should.equal(5);
               payload75.event.eventType.should.equal(6);
@@ -468,20 +468,5 @@ describe('KAnalyticsPlugin', function () {
         player.currentTime = player.duration - 1;
       });
     });
-  });
-
-  it('should not send 25% - 100% for live', (done) => {
-    player._config.type = 'Live';
-    let onTimeUpdate = () => {
-      player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-      let payload = sendSpy.lastCall.args[0];
-      payload.event.eventType.should.equal(2);
-      done();
-    };
-    player.addEventListener(player.Event.LOADED_DATA, () => {
-      player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-      player.currentTime = 12.5;
-    });
-    player.load();
   });
 });
