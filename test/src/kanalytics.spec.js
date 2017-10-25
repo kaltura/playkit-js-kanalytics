@@ -76,11 +76,15 @@ describe('KAnalyticsPlugin', function () {
       player = loadPlayer(config);
     });
 
-    it('should send widget loaded', () => {
-      let payload = sendSpy.lastCall.args[0];
-      verifyPayloadProperties(payload.ks, payload.event);
-      payload.event.seek.should.be.false;
-      payload.event.eventType.should.equal(1);
+    it('should send widget loaded', (done) => {
+      player.ready().then(() => {
+        let payload = sendSpy.firstCall.args[0];
+        verifyPayloadProperties(payload.ks, payload.event);
+        payload.event.seek.should.be.false;
+        payload.event.eventType.should.equal(1);
+        done();
+      });
+      player.load();
     });
 
     it('should send media loaded', (done) => {
@@ -262,10 +266,10 @@ describe('KAnalyticsPlugin', function () {
     it('should send 25% - 100%', (done) => {
       let onTimeUpdate = () => {
         player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-        let payload25 = sendSpy.getCall(1).args[0];
-        let payload50 = sendSpy.getCall(2).args[0];
-        let payload75 = sendSpy.getCall(3).args[0];
-        let payload100 = sendSpy.getCall(4).args[0];
+        let payload25 = sendSpy.getCall(0).args[0];
+        let payload50 = sendSpy.getCall(1).args[0];
+        let payload75 = sendSpy.getCall(2).args[0];
+        let payload100 = sendSpy.getCall(3).args[0];
         payload25.event.eventType.should.equal(4);
         payload50.event.eventType.should.equal(5);
         payload75.event.eventType.should.equal(6);
