@@ -64,7 +64,6 @@ export default class KAnalytics extends BasePlugin {
   constructor(name: string, player: Player, config: Object) {
     super(name, player, config);
     this._registerListeners();
-    this._sendAnalytics(EventTypes.WIDGET_LOADED);
   }
 
   /**
@@ -109,6 +108,7 @@ export default class KAnalytics extends BasePlugin {
    */
   _onSourceSelected(): void {
     this.player.ready().then(() => {
+      this._sendAnalytics(EventTypes.WIDGET_LOADED);
       this._sendAnalytics(EventTypes.MEDIA_LOADED);
     });
   }
