@@ -181,7 +181,6 @@ var KAnalytics = function (_BasePlugin) {
     _this._timePercentEvent = {};
 
     _this._registerListeners();
-    _this._sendAnalytics(_eventTypes2.default.WIDGET_LOADED);
     return _this;
   }
 
@@ -242,6 +241,7 @@ var KAnalytics = function (_BasePlugin) {
       var _this2 = this;
 
       this.player.ready().then(function () {
+        _this2._sendAnalytics(_eventTypes2.default.WIDGET_LOADED);
         _this2._sendAnalytics(_eventTypes2.default.MEDIA_LOADED);
       });
     }
