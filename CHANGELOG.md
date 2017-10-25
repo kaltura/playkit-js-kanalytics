@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.1"></a>
+## [0.6.1](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.6.0...v0.6.1) (2017-10-25)
+
+
+### Bug Fixes
+
+* **fec-7354:** widget loaded event missing kaltura params ([#18](https://github.com/kaltura/playkit-js-kanalytics/issues/18)) ([0c538ef](https://github.com/kaltura/playkit-js-kanalytics/commit/0c538ef))
+
+
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.3.0...v0.6.0) (2017-10-16)
 
