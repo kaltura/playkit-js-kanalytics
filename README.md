@@ -1,6 +1,6 @@
 # PlayKit JS KAnalytics - Kaltura Analytics plugin for the [PlayKit JS Player]
 
-[![Build Status](https://travis-ci.com/kaltura/playkit-js-kanalytics.svg?token=s2ZQw18ukx9Q6ePzDX3F&branch=master)](https://travis-ci.com/kaltura/playkit-js-kanalytics)
+[![Build Status](https://travis-ci.org/kaltura/playkit-js-kanalytics.svg?branch=master)](https://travis-ci.org/kaltura/playkit-js-kanalytics)
 
 PlayKit JS KAnalytics plugin integrates Kaltura analytics with the [PlayKit JS Player].
  
