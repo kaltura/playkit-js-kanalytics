@@ -54,6 +54,11 @@ export default class KAnalytics extends BasePlugin {
    * @private
    */
   _timePercentEvent: { [event: string]: boolean } = {};
+  /**
+   * Indicate whether widget loaded event already sent
+   * @private
+   */
+  _widgetLoadedEventSent: boolean = false;
 
   /**
    * @constructor
@@ -108,7 +113,10 @@ export default class KAnalytics extends BasePlugin {
    */
   _onSourceSelected(): void {
     this.player.ready().then(() => {
-      this._sendAnalytics(EventTypes.WIDGET_LOADED);
+      if (!this._widgetLoadedEventSent) {
+        this._sendAnalytics(EventTypes.WIDGET_LOADED);
+        this._widgetLoadedEventSent = true
+      }
       this._sendAnalytics(EventTypes.MEDIA_LOADED);
     });
   }
