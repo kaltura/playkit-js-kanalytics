@@ -370,6 +370,22 @@ describe('KAnalyticsPlugin', function () {
       player.load();
     });
 
+    it('should not send widget loaded on change media', (done) => {
+      player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
+        player.addEventListener(player.Event.SOURCE_SELECTED, () => {
+          player.ready().then(() => {
+            let payload = sendSpy.lastCall.args[0];
+            verifyPayloadProperties(payload.ks, payload.event);
+            payload.event.seek.should.be.false;
+            payload.event.eventType.should.not.equal(1);
+            done();
+          });
+          player.load();
+        });
+      });
+      player.configure(CMconfig);
+    });
+
     it('should send media loaded', (done) => {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
