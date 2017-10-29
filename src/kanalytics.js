@@ -205,7 +205,7 @@ export default class KAnalytics extends BasePlugin {
       uiConfId: this.config.uiConfId || 0,
       partnerId: this.config.partnerId,
       widgetId: this.config.partnerId ? "_" + this.config.partnerId : "",
-      referrer: document.referrer
+      referrer: document.referrer || document.URL
     };
   }
 
