@@ -161,6 +161,11 @@ var KAnalytics = function (_BasePlugin) {
      * @private
      */
 
+    /**
+     * Indicate whether widget loaded event already sent
+     * @private
+     */
+
   }]);
 
   /**
@@ -179,6 +184,7 @@ var KAnalytics = function (_BasePlugin) {
     _this._ended = false;
     _this._ks = "";
     _this._timePercentEvent = {};
+    _this._widgetLoadedEventSent = false;
 
     _this._registerListeners();
     return _this;
@@ -241,7 +247,10 @@ var KAnalytics = function (_BasePlugin) {
       var _this2 = this;
 
       this.player.ready().then(function () {
-        _this2._sendAnalytics(_eventTypes2.default.WIDGET_LOADED);
+        if (!_this2._widgetLoadedEventSent) {
+          _this2._sendAnalytics(_eventTypes2.default.WIDGET_LOADED);
+          _this2._widgetLoadedEventSent = true;
+        }
         _this2._sendAnalytics(_eventTypes2.default.MEDIA_LOADED);
       });
     }
@@ -383,7 +392,7 @@ var KAnalytics = function (_BasePlugin) {
         uiConfId: this.config.uiConfId || 0,
         partnerId: this.config.partnerId,
         widgetId: this.config.partnerId ? "_" + this.config.partnerId : "",
-        referrer: document.referrer
+        referrer: document.referrer || document.URL
       };
     }
   }]);
