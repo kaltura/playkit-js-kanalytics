@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.2"></a>
+## [0.6.2](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.6.1...v0.6.2) (2017-10-30)
+
+
+### Bug Fixes
+
+* **FEC-7357:** send widget loaded event only once ([#19](https://github.com/kaltura/playkit-js-kanalytics/issues/19)) ([579cca5](https://github.com/kaltura/playkit-js-kanalytics/commit/579cca5))
+* **FEC-7377:** referrer is missing ([#20](https://github.com/kaltura/playkit-js-kanalytics/issues/20)) ([3fb7949](https://github.com/kaltura/playkit-js-kanalytics/commit/3fb7949))
+
+
+
 <a name="0.6.1"></a>
 ## [0.6.1](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.6.0...v0.6.1) (2017-10-25)
 
