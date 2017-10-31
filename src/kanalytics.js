@@ -210,7 +210,7 @@ export default class KAnalytics extends BasePlugin {
       clientVer: this.config.playerVersion,
       entryId: this.config.entryId,
       sessionId: this.config.sessionId,
-      uiConfId: this.config.uiConfId || 0,
+      uiConfId: this.config.uiConfId || -1,
       partnerId: this.config.partnerId,
       widgetId: this.config.partnerId ? "_" + this.config.partnerId : "",
       referrer: document.referrer || document.URL
