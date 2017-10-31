@@ -16,7 +16,7 @@ export default class KAnalytics extends BasePlugin {
    * @static
    */
   static defaultConfig: Object = {
-    baseUrl: 'http://stats.kaltura.com/api_v3/index.php',
+    baseUrl: '//stats.kaltura.com/api_v3/index.php',
     hasKanalony: false
   };
 
