@@ -110,6 +110,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var pluginName = "kanalytics";
 var SEEK_OFFSET = 2000;
+var LIVE = 'Live';
 
 /**
  * @classdesc
@@ -137,12 +138,16 @@ var KAnalytics = function (_BasePlugin) {
      */
 
     /**
+     * @static
+     */
+
+    /**
      * Whether seeking occurred
      * @private
      */
 
     /**
-     * Indicate whether time percent event already sent
+     * The ended flag
      * @private
      */
 
@@ -152,7 +157,13 @@ var KAnalytics = function (_BasePlugin) {
      */
 
     /**
-     * @static
+     * Indicate whether time percent event already sent
+     * @private
+     */
+
+    /**
+     * Indicate whether widget loaded event already sent
+     * @private
      */
 
   }]);
@@ -168,22 +179,38 @@ var KAnalytics = function (_BasePlugin) {
 
     var _this = _possibleConstructorReturn(this, (KAnalytics.__proto__ || Object.getPrototypeOf(KAnalytics)).call(this, name, player, config));
 
-    _this._initializeMembers();
+    _this._lastSeekEvent = 0;
+    _this._hasSeeked = false;
+    _this._ended = false;
+    _this._ks = "";
+    _this._timePercentEvent = {};
+    _this._widgetLoadedEventSent = false;
+
     _this._registerListeners();
-    _this._sendAnalytics(_eventTypes2.default.WIDGET_LOADED);
-    player.ready().then(function () {
-      _this._sendAnalytics(_eventTypes2.default.MEDIA_LOADED);
-    });
     return _this;
   }
 
   /**
-   * @public
+   * Reset the plugin flags
    * @return {void}
    */
 
 
   _createClass(KAnalytics, [{
+    key: 'reset',
+    value: function reset() {
+      this._hasSeeked = false;
+      this._ended = false;
+      this._ks = "";
+      this._timePercentEvent = {};
+    }
+
+    /**
+     * @public
+     * @return {void}
+     */
+
+  }, {
     key: 'destroy',
     value: function destroy() {
       this.eventManager.destroy();
@@ -199,12 +226,33 @@ var KAnalytics = function (_BasePlugin) {
     key: '_registerListeners',
     value: function _registerListeners() {
       var PlayerEvent = this.player.Event;
+      this.eventManager.listen(this.player, PlayerEvent.SOURCE_SELECTED, this._onSourceSelected.bind(this));
       this.eventManager.listen(this.player, PlayerEvent.FIRST_PLAY, this._sendAnalytics.bind(this, _eventTypes2.default.PLAY));
       this.eventManager.listen(this.player, PlayerEvent.PLAY, this._onPlay.bind(this));
       this.eventManager.listen(this.player, PlayerEvent.ENDED, this._onEnded.bind(this));
       this.eventManager.listen(this.player, PlayerEvent.SEEKED, this._sendSeekAnalytic.bind(this));
       this.eventManager.listen(this.player, PlayerEvent.TIME_UPDATE, this._sendTimePercentAnalytic.bind(this));
       this.eventManager.listen(this.player, PlayerEvent.PLAYER_STATE_CHANGED, this._onPlayerStateChanged.bind(this));
+    }
+
+    /**
+     * The source selected event listener
+     * @private
+     * @return {void}
+     */
+
+  }, {
+    key: '_onSourceSelected',
+    value: function _onSourceSelected() {
+      var _this2 = this;
+
+      this.player.ready().then(function () {
+        if (!_this2._widgetLoadedEventSent) {
+          _this2._sendAnalytics(_eventTypes2.default.WIDGET_LOADED);
+          _this2._widgetLoadedEventSent = true;
+        }
+        _this2._sendAnalytics(_eventTypes2.default.MEDIA_LOADED);
+      });
     }
 
     /**
@@ -262,12 +310,12 @@ var KAnalytics = function (_BasePlugin) {
     key: '_sendSeekAnalytic',
     value: function _sendSeekAnalytic() {
       var now = new Date().getTime();
-      if (this._lastSeekEvent === 0 || this._lastSeekEvent + SEEK_OFFSET < now) {
+      if (this._lastSeekEvent + SEEK_OFFSET < now && (this.player.config.type !== LIVE || this.player.config.dvr)) {
         // avoid sending lots of seeking while scrubbing
         this._sendAnalytics(_eventTypes2.default.SEEK);
+        this._hasSeeked = true;
       }
       this._lastSeekEvent = now;
-      this._hasSeeked = true;
     }
 
     /**
@@ -279,22 +327,24 @@ var KAnalytics = function (_BasePlugin) {
   }, {
     key: '_sendTimePercentAnalytic',
     value: function _sendTimePercentAnalytic() {
-      var percent = this.player.currentTime / this.player.duration;
-      if (!this._timePercentEvent.PLAY_REACHED_25 && percent >= .25) {
-        this._timePercentEvent.PLAY_REACHED_25 = true;
-        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_25);
-      }
-      if (!this._timePercentEvent.PLAY_REACHED_50 && percent >= .50) {
-        this._timePercentEvent.PLAY_REACHED_50 = true;
-        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_50);
-      }
-      if (!this._timePercentEvent.PLAY_REACHED_75 && percent >= .75) {
-        this._timePercentEvent.PLAY_REACHED_75 = true;
-        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_75);
-      }
-      if (!this._timePercentEvent.PLAY_REACHED_100 && percent >= .98) {
-        this._timePercentEvent.PLAY_REACHED_100 = true;
-        this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_100);
+      if (this.player.config.type !== LIVE) {
+        var percent = this.player.currentTime / this.player.duration;
+        if (!this._timePercentEvent.PLAY_REACHED_25 && percent >= .25) {
+          this._timePercentEvent.PLAY_REACHED_25 = true;
+          this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_25);
+        }
+        if (!this._timePercentEvent.PLAY_REACHED_50 && percent >= .50) {
+          this._timePercentEvent.PLAY_REACHED_50 = true;
+          this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_50);
+        }
+        if (!this._timePercentEvent.PLAY_REACHED_75 && percent >= .75) {
+          this._timePercentEvent.PLAY_REACHED_75 = true;
+          this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_75);
+        }
+        if (!this._timePercentEvent.PLAY_REACHED_100 && percent >= .98) {
+          this._timePercentEvent.PLAY_REACHED_100 = true;
+          this._sendAnalytics(_eventTypes2.default.PLAY_REACHED_100);
+        }
       }
     }
 
@@ -315,7 +365,7 @@ var KAnalytics = function (_BasePlugin) {
      * @return {void}
      */
     value: function _sendAnalytics(eventType) {
-      var _this2 = this;
+      var _this3 = this;
 
       var statsEvent = new _event2.default(eventType);
       statsEvent.currentPoint = this.player.currentTime;
@@ -326,26 +376,10 @@ var KAnalytics = function (_BasePlugin) {
 
       var request = _statsService2.default.collect(this.config.playerVersion, this._ks, { "event": statsEvent }, this.config.baseUrl);
       request.doHttpRequest().then(function () {
-        _this2.logger.debug('Analytics event sent ', statsEvent);
+        _this3.logger.debug('Analytics event sent ', statsEvent);
       }, function (err) {
-        _this2.logger.error('Failed to send analytics event ', statsEvent, err);
+        _this3.logger.error('Failed to send analytics event ', statsEvent, err);
       });
-    }
-
-    /**
-     * Initialize the plugin members
-     * @private
-     * @return {void}
-     */
-
-  }, {
-    key: '_initializeMembers',
-    value: function _initializeMembers() {
-      this._ks = "";
-      this._ended = false;
-      this._timePercentEvent = {};
-      this._lastSeekEvent = 0;
-      this._hasSeeked = false;
     }
   }, {
     key: '_playerParams',
@@ -358,7 +392,7 @@ var KAnalytics = function (_BasePlugin) {
         uiConfId: this.config.uiConfId || 0,
         partnerId: this.config.partnerId,
         widgetId: this.config.partnerId ? "_" + this.config.partnerId : "",
-        referrer: document.referrer
+        referrer: document.referrer || document.URL
       };
     }
   }]);
