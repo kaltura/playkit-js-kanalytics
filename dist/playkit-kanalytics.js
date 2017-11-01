@@ -406,7 +406,7 @@ var KAnalytics = function (_BasePlugin) {
 
 
 KAnalytics.defaultConfig = {
-  baseUrl: 'http://stats.kaltura.com/api_v3/index.php',
+  baseUrl: '//stats.kaltura.com/api_v3/index.php',
   hasKanalony: false
 };
 exports.default = KAnalytics;
