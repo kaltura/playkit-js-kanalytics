@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.3"></a>
+## [0.6.3](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.6.2...v0.6.3) (2017-11-01)
+
+
+### Bug Fixes
+
+* **FEC-7377:** stats events fail over https ([#22](https://github.com/kaltura/playkit-js-kanalytics/issues/22)) ([e555fb1](https://github.com/kaltura/playkit-js-kanalytics/commit/e555fb1))
+
+
+
 <a name="0.6.2"></a>
 ## [0.6.2](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.6.1...v0.6.2) (2017-10-30)
 
