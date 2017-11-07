@@ -1,5 +1,5 @@
 //eslint-disable-next-line no-unused-vars
-import KAnalyticsPlugin from '../../src/kanalytics'
+import KAnalyticsPlugin from '../../src'
 import {loadPlayer} from 'playkit-js'
 import * as TestUtils from 'playkit-js/test/src/utils/test-utils'
 
