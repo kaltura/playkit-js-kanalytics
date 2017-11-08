@@ -1,10 +1,9 @@
 //@flow
-import {BasePlugin, registerPlugin} from 'playkit-js'
+import {BasePlugin} from 'playkit-js'
 import StatsService from 'playkit-js-providers/dist/statsService'
 import EventTypes from './event-types'
 import Event from './event'
 
-const pluginName = "kanalytics";
 const SEEK_OFFSET: number = 2000;
 const LIVE: string = 'Live';
 
@@ -241,8 +240,3 @@ export default class KAnalytics extends BasePlugin {
         });
   }
 }
-
-/**
- * Register the plugin in the playkit-js plugin framework.
- */
-registerPlugin(pluginName, KAnalytics);
