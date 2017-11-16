@@ -7,7 +7,7 @@
 		exports["PlaykitJsKAnalytics"] = factory(require("playkit-js"));
 	else
 		root["PlaykitJsKAnalytics"] = factory(root["Playkit"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_1__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_0__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -70,11 +70,48 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_0__;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.NAME = exports.VERSION = undefined;
+
+var _playkitJs = __webpack_require__(0);
+
+var _kanalytics = __webpack_require__(2);
+
+var _kanalytics2 = _interopRequireDefault(_kanalytics);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _kanalytics2.default;
+exports.VERSION = "0.7.0";
+exports.NAME = "playkit-js-kanalytics";
+
+
+var pluginName = "kanalytics";
+/**
+ * Register the plugin in the playkit-js plugin framework.
+ */
+(0, _playkitJs.registerPlugin)(pluginName, _kanalytics2.default);
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86,17 +123,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _playkitJs = __webpack_require__(1);
+var _playkitJs = __webpack_require__(0);
 
-var _statsService = __webpack_require__(2);
+var _statsService = __webpack_require__(3);
 
 var _statsService2 = _interopRequireDefault(_statsService);
 
-var _eventTypes = __webpack_require__(3);
+var _eventTypes = __webpack_require__(4);
 
 var _eventTypes2 = _interopRequireDefault(_eventTypes);
 
-var _event = __webpack_require__(4);
+var _event = __webpack_require__(5);
 
 var _event2 = _interopRequireDefault(_event);
 
@@ -108,7 +145,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var pluginName = "kanalytics";
 var SEEK_OFFSET = 2000;
 var LIVE = 'Live';
 
@@ -400,26 +436,14 @@ var KAnalytics = function (_BasePlugin) {
   return KAnalytics;
 }(_playkitJs.BasePlugin);
 
-/**
- * Register the plugin in the playkit-js plugin framework.
- */
-
-
 KAnalytics.defaultConfig = {
   baseUrl: '//stats.kaltura.com/api_v3/index.php',
   hasKanalony: false
 };
 exports.default = KAnalytics;
-(0, _playkitJs.registerPlugin)(pluginName, KAnalytics);
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
-
-/***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function webpackUniversalModuleDefinition(root, factory) {
@@ -467,6 +491,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -494,7 +521,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 37);
+/******/ 	return __webpack_require__(__webpack_require__.s = 36);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -640,8 +667,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var defaultConfig = {
-  beUrl: "http://www.kaltura.com/api_v3",
-  baseUrl: "https://cdnapisec.kaltura.com",
+  beUrl: "//www.kaltura.com/api_v3",
+  baseUrl: "//cdnapisec.kaltura.com",
   serviceParams: {
     apiVersion: '3.3.0',
     format: 1
@@ -676,6 +703,141 @@ exports.Configuration = Configuration;
 /***/ }),
 
 /***/ 2:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _multiRequestBuilder = __webpack_require__(5);
+
+var _multiRequestBuilder2 = _interopRequireDefault(_multiRequestBuilder);
+
+var _config = __webpack_require__(1);
+
+var _config2 = _interopRequireDefault(_config);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var config = _config2.default.get();
+var SERVICE_NAME = "multirequest";
+
+/**
+ * Base for all ovp services
+ * @classdesc
+ */
+
+var OvpService = function () {
+  function OvpService() {
+    _classCallCheck(this, OvpService);
+  }
+
+  _createClass(OvpService, null, [{
+    key: 'getMultirequest',
+
+    /**
+     * Gets a new instance of MultiRequestBuilder with ovp params
+     * @function getMultirequest
+     * @param {string} pVersion The player version
+     * @param {string} ks The ks
+     * @param {string} partnerId The partner ID
+     * @returns {MultiRequestBuilder} The multi request builder
+     * @static
+     */
+    value: function getMultirequest(pVersion, ks, partnerId) {
+      var ovpParams = config.serviceParams;
+      Object.assign(ovpParams, { ks: ks, clientTag: 'html5:v' + pVersion });
+      if (partnerId) {
+        Object.assign(ovpParams, { partnerId: partnerId });
+      }
+      var headers = new Map();
+      headers.set("Content-Type", "application/json");
+      var multiReq = new _multiRequestBuilder2.default(headers);
+      multiReq.method = "POST";
+      multiReq.service = SERVICE_NAME;
+      multiReq.url = multiReq.getUrl(config.beUrl);
+      multiReq.params = ovpParams;
+      return multiReq;
+    }
+  }]);
+
+  return OvpService;
+}();
+
+exports.default = OvpService;
+
+/***/ }),
+
+/***/ 20:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var param = function param(a) {
+  var s = [],
+      rbracket = /\[\]$/,
+      isArray = function isArray(obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+  },
+      add = function add(k, v) {
+    v = typeof v === 'function' ? v() : v === null ? '' : v === undefined ? '' : v;
+    s[s.length] = encodeURIComponent(k) + '=' + encodeURIComponent(v);
+  },
+      buildParams = function buildParams(prefix, obj) {
+    var i = void 0,
+        len = void 0,
+        key = void 0;
+
+    if (prefix) {
+      if (isArray(obj)) {
+        for (i = 0, len = obj.length; i < len; i++) {
+          if (rbracket.test(prefix)) {
+            add(prefix, obj[i]);
+          } else {
+            buildParams(prefix + ':' + (_typeof(obj[i]) === 'object' ? i : ''), obj[i]);
+          }
+        }
+      } else if (obj && String(obj) === '[object Object]') {
+        for (key in obj) {
+          buildParams(prefix + ':' + key, obj[key]);
+        }
+      } else {
+        add(prefix, obj);
+      }
+    } else if (isArray(obj)) {
+      for (i = 0, len = obj.length; i < len; i++) {
+        add(obj[i].name, obj[i].value);
+      }
+    } else {
+      for (key in obj) {
+        buildParams(key, obj[key]);
+      }
+    }
+    return s;
+  };
+
+  return buildParams('', a).join('&').replace(/%20/g, '+');
+};
+
+exports.param = param;
+
+/***/ }),
+
+/***/ 3:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -760,7 +922,7 @@ function ServiceError(code, message) {
 
 /***/ }),
 
-/***/ 3:
+/***/ 36:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -769,84 +931,11 @@ function ServiceError(code, message) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.NAME = exports.VERSION = exports.RequestBuilder = exports.Configuration = exports.StatsService = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _multiRequestBuilder = __webpack_require__(5);
-
-var _multiRequestBuilder2 = _interopRequireDefault(_multiRequestBuilder);
-
-var _config = __webpack_require__(1);
-
-var _config2 = _interopRequireDefault(_config);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var config = _config2.default.get();
-var SERVICE_NAME = "multirequest";
-
-/**
- * Base for all ovp services
- * @classdesc
- */
-
-var OvpService = function () {
-  function OvpService() {
-    _classCallCheck(this, OvpService);
-  }
-
-  _createClass(OvpService, null, [{
-    key: 'getMultirequest',
-
-    /**
-     * Gets a new instance of MultiRequestBuilder with ovp params
-     * @function getMultirequest
-     * @param {string} pVersion The player version
-     * @param {string} ks The ks
-     * @param {string} partnerId The partner ID
-     * @returns {MultiRequestBuilder} The multi request builder
-     * @static
-     */
-    value: function getMultirequest(pVersion, ks, partnerId) {
-      var ovpParams = config.serviceParams;
-      Object.assign(ovpParams, { ks: ks, clientTag: 'html5:v' + pVersion });
-      if (partnerId) {
-        Object.assign(ovpParams, { partnerId: partnerId });
-      }
-      var headers = new Map();
-      headers.set("Content-Type", "application/json");
-      var multiReq = new _multiRequestBuilder2.default(headers);
-      multiReq.method = "POST";
-      multiReq.service = SERVICE_NAME;
-      multiReq.url = multiReq.getUrl(config.beUrl);
-      multiReq.params = ovpParams;
-      return multiReq;
-    }
-  }]);
-
-  return OvpService;
-}();
-
-exports.default = OvpService;
-
-/***/ }),
-
-/***/ 37:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.RequestBuilder = exports.Configuration = exports.StatsService = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _ovpService = __webpack_require__(3);
+var _ovpService = __webpack_require__(2);
 
 var _ovpService2 = _interopRequireDefault(_ovpService);
 
@@ -858,7 +947,7 @@ var _config = __webpack_require__(1);
 
 var _config2 = _interopRequireDefault(_config);
 
-var _param = __webpack_require__(38);
+var _param = __webpack_require__(20);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -920,67 +1009,9 @@ exports.StatsService = StatsService;
 exports.Configuration = _config2.default;
 exports.RequestBuilder = _requestBuilder2.default;
 
-/***/ }),
-
-/***/ 38:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var param = function param(a) {
-  var s = [],
-      rbracket = /\[\]$/,
-      isArray = function isArray(obj) {
-    return Object.prototype.toString.call(obj) === '[object Array]';
-  },
-      add = function add(k, v) {
-    v = typeof v === 'function' ? v() : v === null ? '' : v === undefined ? '' : v;
-    s[s.length] = encodeURIComponent(k) + '=' + encodeURIComponent(v);
-  },
-      buildParams = function buildParams(prefix, obj) {
-    var i = void 0,
-        len = void 0,
-        key = void 0;
-
-    if (prefix) {
-      if (isArray(obj)) {
-        for (i = 0, len = obj.length; i < len; i++) {
-          if (rbracket.test(prefix)) {
-            add(prefix, obj[i]);
-          } else {
-            buildParams(prefix + ':' + (_typeof(obj[i]) === 'object' ? i : ''), obj[i]);
-          }
-        }
-      } else if (obj && String(obj) === '[object Object]') {
-        for (key in obj) {
-          buildParams(prefix + ':' + key, obj[key]);
-        }
-      } else {
-        add(prefix, obj);
-      }
-    } else if (isArray(obj)) {
-      for (i = 0, len = obj.length; i < len; i++) {
-        add(obj[i].name, obj[i].value);
-      }
-    } else {
-      for (key in obj) {
-        buildParams(key, obj[key]);
-      }
-    }
-    return s;
-  };
-
-  return buildParams('', a).join('&').replace(/%20/g, '+');
-};
-
-exports.param = param;
+var packageName = "playkit-js-providers" + "-stats-service";
+exports.VERSION = "1.4.0";
+exports.NAME = packageName;
 
 /***/ }),
 
@@ -993,40 +1024,15 @@ exports.param = param;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.LOG_LEVEL = undefined;
+exports.setLogLevel = exports.getLogLevel = exports.LogLevel = undefined;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _jsLogger = __webpack_require__(6);
+var _jsLogger = __webpack_require__(8);
 
 var JsLogger = _interopRequireWildcard(_jsLogger);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var LoggerFactory = function () {
-  function LoggerFactory(options) {
-    _classCallCheck(this, LoggerFactory);
-
-    JsLogger.useDefaults(options || {});
-  }
-
-  _createClass(LoggerFactory, [{
-    key: "get",
-    value: function get(name) {
-      if (!name) {
-        return JsLogger;
-      }
-      return JsLogger.get(name);
-    }
-  }]);
-
-  return LoggerFactory;
-}();
-
-var Logger = new LoggerFactory({ defaultLevel: JsLogger.DEBUG });
-var LOG_LEVEL = {
+var LogLevel = {
   "DEBUG": JsLogger.DEBUG,
   "INFO": JsLogger.INFO,
   "TIME": JsLogger.TIME,
@@ -1035,8 +1041,47 @@ var LOG_LEVEL = {
   "OFF": JsLogger.OFF
 };
 
-exports.default = Logger;
-exports.LOG_LEVEL = LOG_LEVEL;
+
+JsLogger.useDefaults({ defaultLevel: JsLogger.ERROR });
+
+/**
+ * get a logger
+ * @param {?string} name - the logger name
+ * @returns {Object} - the logger class
+ */
+function getLogger(name) {
+  if (!name) {
+    return JsLogger;
+  }
+  return JsLogger.get(name);
+}
+
+/**
+ * get the log level
+ * @param {?string} name - the logger name
+ * @returns {Object} - the log level
+ */
+function getLogLevel(name) {
+  return getLogger(name).getLevel();
+}
+
+"";
+
+/**
+ * sets the logger level
+ * @param {Object} level - the log level
+ * @param {?string} name - the logger name
+ * @returns {void}
+ */
+function setLogLevel(level, name) {
+
+  getLogger(name).setLevel(level);
+}
+
+exports.default = getLogger;
+exports.LogLevel = LogLevel;
+exports.getLogLevel = getLogLevel;
+exports.setLogLevel = setLogLevel;
 
 /***/ }),
 
@@ -1057,7 +1102,7 @@ var _requestBuilder = __webpack_require__(0);
 
 var _requestBuilder2 = _interopRequireDefault(_requestBuilder);
 
-var _baseServiceResult = __webpack_require__(2);
+var _baseServiceResult = __webpack_require__(3);
 
 var _baseServiceResult2 = _interopRequireDefault(_baseServiceResult);
 
@@ -1078,7 +1123,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 /**
  * @constant
  */
-var logger = _logger2.default.get("OvpProvider");
+var logger = (0, _logger2.default)("OvpProvider");
 
 /**
  * Multi Request builder
@@ -1204,7 +1249,7 @@ exports.MultiRequestResult = function MultiRequestResult(response) {
 
 /***/ }),
 
-/***/ 6:
+/***/ 8:
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -1489,7 +1534,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 //# sourceMappingURL=statsService.js.map
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1544,7 +1589,7 @@ var EVENT_TYPES = {
 exports.default = EVENT_TYPES;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
