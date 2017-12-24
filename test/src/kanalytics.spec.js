@@ -1,12 +1,9 @@
-//eslint-disable-next-line no-unused-vars
-import KAnalyticsPlugin from '../../src'
+import '../../src/index'
 import {loadPlayer} from 'playkit-js'
 import * as TestUtils from 'playkit-js/test/src/utils/test-utils'
 
 describe('KAnalyticsPlugin', function () {
-
   let player, sandbox, sendSpy, config;
-
   const playerVersion = '1.2.3';
   const ks = 'NTAwZjViZWZjY2NjNTRkNGEyMjU1MTg4OGE1NmUwNDljZWJkMzk1MXwxMDY4MjkyOzEwNjgyOTI7MTQ5MDE3NjE0NjswOzE0OTAwODk3NDYuMDIyNjswO3ZpZXc6Kix3aWRnZXQ6MTs7';
   const type = 'vod';
@@ -154,45 +151,48 @@ describe('KAnalyticsPlugin', function () {
       player.load();
     });
 
-  it('should not send seek for live', (done) => {
-    player._config.type = 'Live';
-    player.addEventListener(player.Event.FIRST_PLAY, () => {
-      player.currentTime = player.duration / 2;
+    it('should not send seek for live', (done) => {
+      player._config.type = 'Live';
+      player.addEventListener(player.Event.FIRST_PLAY, () => {
+        player.currentTime = player.duration / 2;
+      });
+      player.addEventListener(player.Event.SEEKED, () => {
+        const payload = sendSpy.lastCall.args[0];
+        payload.event.eventType.should.not.equal(17);
+        done();
+      });
+      player.play();
     });
-    player.addEventListener(player.Event.SEEKED, () => {
-      const payload = sendSpy.lastCall.args[0];
-      payload.event.eventType.should.not.equal(17);
-      done();
-    });
-    player.play();
-  });
 
-  it('should send seek for live + dvr', (done) => {
-    player._config.type = 'Live';
-    player._config.dvr = true;
-    player.addEventListener(player.Event.FIRST_PLAY, () => {
-      player.currentTime = player.duration / 2;
+    it('should send seek for live + dvr', (done) => {
+      player._config.type = 'Live';
+      player._config.dvr = true;
+      player.addEventListener(player.Event.FIRST_PLAY, () => {
+        player.currentTime = player.duration / 2;
+      });
+      player.addEventListener(player.Event.SEEKED, () => {
+        const payload = sendSpy.lastCall.args[0];
+        payload.event.eventType.should.equal(17);
+        done();
+      });
+      player.play();
     });
-    player.addEventListener(player.Event.SEEKED, () => {
+    it('should send buffer start', () => {
+      player.dispatchEvent({
+        type: player.Event.PLAYER_STATE_CHANGED, payload: {
+          'newState': {
+            'type': player.State.BUFFERING
+          },
+          'oldState': {
+            'type': player.State.PLAYING
+          }
+        }
+      });
       const payload = sendSpy.lastCall.args[0];
-      payload.event.eventType.should.equal(17);
-      done();
+      verifyPayloadProperties(payload.ks, payload.event);
+      payload.event.seek.should.be.false;
+      payload.event.eventType.should.equal(12);
     });
-    player.play();
-  });it('should send buffer start', () => {
-    player.dispatchEvent({type: player.Event.PLAYER_STATE_CHANGED, payload:{
-      'newState': {
-        'type': player.State.BUFFERING
-      },
-      'oldState': {
-        'type': player.State.PLAYING}
-      }
-    });
-    const payload = sendSpy.lastCall.args[0];
-    verifyPayloadProperties(payload.ks, payload.event);
-    payload.event.seek.should.be.false;
-    payload.event.eventType.should.equal(12);
-  });
 
     it('should send buffer end', () => {
       player.dispatchEvent({
