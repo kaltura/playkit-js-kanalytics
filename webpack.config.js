@@ -18,11 +18,13 @@ if (PROD) {
 
 module.exports = {
   context: __dirname + "/src",
-  entry: {"playkit-kanalytics": "index.js"},
+  entry: {
+    "playkit-kanalytics": "index.js"
+  },
   output: {
     path: __dirname + "/dist",
     filename: '[name].js',
-    library: "PlaykitJsKAnalytics",
+    library: ["playkit", "kanalytics"],
     libraryTarget: "umd",
     devtoolModuleFilenameTemplate: "./kanalytics/[resource-path]",
   },
