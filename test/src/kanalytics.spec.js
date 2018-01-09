@@ -1,12 +1,9 @@
-//eslint-disable-next-line no-unused-vars
-import KAnalyticsPlugin from '../../src'
+import '../../src/index'
 import {loadPlayer} from 'playkit-js'
 import * as TestUtils from 'playkit-js/test/src/utils/test-utils'
 
 describe('KAnalyticsPlugin', function () {
-
   let player, sandbox, sendSpy, config;
-
   const playerVersion = '1.2.3';
   const ks = 'NTAwZjViZWZjY2NjNTRkNGEyMjU1MTg4OGE1NmUwNDljZWJkMzk1MXwxMDY4MjkyOzEwNjgyOTI7MTQ5MDE3NjE0NjswOzE0OTAwODk3NDYuMDIyNjswO3ZpZXc6Kix3aWRnZXQ6MTs7';
   const type = 'vod';
@@ -78,7 +75,7 @@ describe('KAnalyticsPlugin', function () {
 
     it('should send widget loaded', (done) => {
       player.ready().then(() => {
-        let payload = sendSpy.firstCall.args[0];
+        const payload = sendSpy.firstCall.args[0];
         verifyPayloadProperties(payload.ks, payload.event);
         payload.event.seek.should.be.false;
         payload.event.eventType.should.equal(1);
@@ -89,7 +86,7 @@ describe('KAnalyticsPlugin', function () {
 
     it('should send media loaded', (done) => {
       player.ready().then(() => {
-        let payload = sendSpy.lastCall.args[0];
+        const payload = sendSpy.lastCall.args[0];
         verifyPayloadProperties(payload.ks, payload.event);
         payload.event.seek.should.be.false;
         payload.event.eventType.should.equal(2);
@@ -100,7 +97,7 @@ describe('KAnalyticsPlugin', function () {
 
     it('should send first play', (done) => {
       player.addEventListener(player.Event.FIRST_PLAY, () => {
-        let payload = sendSpy.lastCall.args[0];
+        const payload = sendSpy.lastCall.args[0];
         verifyPayloadProperties(payload.ks, payload.event);
         payload.event.seek.should.be.false;
         payload.event.eventType.should.equal(3);
@@ -115,7 +112,7 @@ describe('KAnalyticsPlugin', function () {
       });
       player.addEventListener(player.Event.ENDED, () => {
         player.addEventListener(player.Event.PLAY, () => {
-          let payload = sendSpy.lastCall.args[0];
+          const payload = sendSpy.lastCall.args[0];
           verifyPayloadProperties(payload.ks, payload.event);
           payload.event.seek.should.be.true;
           payload.event.eventType.should.equal(16);
@@ -131,7 +128,7 @@ describe('KAnalyticsPlugin', function () {
         player.currentTime = player.duration / 2;
       });
       player.addEventListener(player.Event.SEEKED, () => {
-        let payload = sendSpy.lastCall.args[0];
+        const payload = sendSpy.lastCall.args[0];
         verifyPayloadProperties(payload.ks, payload.event);
         payload.event.seek.should.be.false;
         payload.event.eventType.should.equal(17);
@@ -145,7 +142,7 @@ describe('KAnalyticsPlugin', function () {
         player.currentTime = player.duration / 2;
       });
       player.addEventListener(player.Event.SEEKED, () => {
-        let payload = sendSpy.lastCall.args[0];
+        const payload = sendSpy.lastCall.args[0];
         verifyPayloadProperties(payload.ks, payload.event);
         payload.event.seek.should.be.false;
         payload.event.eventType.should.equal(17);
@@ -154,45 +151,48 @@ describe('KAnalyticsPlugin', function () {
       player.load();
     });
 
-  it('should not send seek for live', (done) => {
-    player._config.type = 'Live';
-    player.addEventListener(player.Event.FIRST_PLAY, () => {
-      player.currentTime = player.duration / 2;
+    it('should not send seek for live', (done) => {
+      player._config.type = 'Live';
+      player.addEventListener(player.Event.FIRST_PLAY, () => {
+        player.currentTime = player.duration / 2;
+      });
+      player.addEventListener(player.Event.SEEKED, () => {
+        const payload = sendSpy.lastCall.args[0];
+        payload.event.eventType.should.not.equal(17);
+        done();
+      });
+      player.play();
     });
-    player.addEventListener(player.Event.SEEKED, () => {
-      let payload = sendSpy.lastCall.args[0];
-      payload.event.eventType.should.not.equal(17);
-      done();
-    });
-    player.play();
-  });
 
-  it('should send seek for live + dvr', (done) => {
-    player._config.type = 'Live';
-    player._config.dvr = true;
-    player.addEventListener(player.Event.FIRST_PLAY, () => {
-      player.currentTime = player.duration / 2;
+    it('should send seek for live + dvr', (done) => {
+      player._config.type = 'Live';
+      player._config.dvr = true;
+      player.addEventListener(player.Event.FIRST_PLAY, () => {
+        player.currentTime = player.duration / 2;
+      });
+      player.addEventListener(player.Event.SEEKED, () => {
+        const payload = sendSpy.lastCall.args[0];
+        payload.event.eventType.should.equal(17);
+        done();
+      });
+      player.play();
     });
-    player.addEventListener(player.Event.SEEKED, () => {
-      let payload = sendSpy.lastCall.args[0];
-      payload.event.eventType.should.equal(17);
-      done();
+    it('should send buffer start', () => {
+      player.dispatchEvent({
+        type: player.Event.PLAYER_STATE_CHANGED, payload: {
+          'newState': {
+            'type': player.State.BUFFERING
+          },
+          'oldState': {
+            'type': player.State.PLAYING
+          }
+        }
+      });
+      const payload = sendSpy.lastCall.args[0];
+      verifyPayloadProperties(payload.ks, payload.event);
+      payload.event.seek.should.be.false;
+      payload.event.eventType.should.equal(12);
     });
-    player.play();
-  });it('should send buffer start', () => {
-    player.dispatchEvent({type: player.Event.PLAYER_STATE_CHANGED, payload:{
-      'newState': {
-        'type': player.State.BUFFERING
-      },
-      'oldState': {
-        'type': player.State.PLAYING}
-      }
-    });
-    let payload = sendSpy.lastCall.args[0];
-    verifyPayloadProperties(payload.ks, payload.event);
-    payload.event.seek.should.be.false;
-    payload.event.eventType.should.equal(12);
-  });
 
     it('should send buffer end', () => {
       player.dispatchEvent({
@@ -205,7 +205,7 @@ describe('KAnalyticsPlugin', function () {
           }
         }
       });
-      let payload = sendSpy.lastCall.args[0];
+      const payload = sendSpy.lastCall.args[0];
       verifyPayloadProperties(payload.ks, payload.event);
       payload.event.seek.should.be.false;
       payload.event.eventType.should.equal(13);
@@ -216,7 +216,7 @@ describe('KAnalyticsPlugin', function () {
         player.currentTime = 4;
       });
       player.addEventListener(player.Event.TIME_UPDATE, () => {
-        let payload = sendSpy.lastCall.args[0];
+        const payload = sendSpy.lastCall.args[0];
         verifyPayloadProperties(payload.ks, payload.event);
         payload.event.eventType.should.equal(4);
         done();
@@ -229,7 +229,7 @@ describe('KAnalyticsPlugin', function () {
         player.currentTime = 7;
       });
       player.addEventListener(player.Event.TIME_UPDATE, () => {
-        let payload = sendSpy.lastCall.args[0];
+        const payload = sendSpy.lastCall.args[0];
         verifyPayloadProperties(payload.ks, payload.event);
         payload.event.eventType.should.equal(5);
         done();
@@ -242,7 +242,7 @@ describe('KAnalyticsPlugin', function () {
         player.currentTime = 10;
       });
       player.addEventListener(player.Event.TIME_UPDATE, () => {
-        let payload = sendSpy.lastCall.args[0];
+        const payload = sendSpy.lastCall.args[0];
         verifyPayloadProperties(payload.ks, payload.event);
         payload.event.eventType.should.equal(6);
         done();
@@ -255,7 +255,7 @@ describe('KAnalyticsPlugin', function () {
         player.currentTime = 12.5;
       });
       player.addEventListener(player.Event.TIME_UPDATE, () => {
-        let payload = sendSpy.lastCall.args[0];
+        const payload = sendSpy.lastCall.args[0];
         verifyPayloadProperties(payload.ks, payload.event);
         payload.event.eventType.should.equal(7);
         done();
@@ -264,12 +264,12 @@ describe('KAnalyticsPlugin', function () {
     });
 
     it('should send 25% - 100%', (done) => {
-      let onTimeUpdate = () => {
+      const onTimeUpdate = () => {
         player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-        let payload25 = sendSpy.getCall(0).args[0];
-        let payload50 = sendSpy.getCall(1).args[0];
-        let payload75 = sendSpy.getCall(2).args[0];
-        let payload100 = sendSpy.getCall(3).args[0];
+        const payload25 = sendSpy.getCall(0).args[0];
+        const payload50 = sendSpy.getCall(1).args[0];
+        const payload75 = sendSpy.getCall(2).args[0];
+        const payload100 = sendSpy.getCall(3).args[0];
         payload25.event.eventType.should.equal(4);
         payload50.event.eventType.should.equal(5);
         payload75.event.eventType.should.equal(6);
@@ -289,9 +289,9 @@ describe('KAnalyticsPlugin', function () {
       });
       player.addEventListener(player.Event.ENDED, () => {
         player.addEventListener(player.Event.PLAY, () => {
-          let onTimeUpdate = () => {
+          const onTimeUpdate = () => {
             player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-            let payload = sendSpy.lastCall.args[0];
+            const payload = sendSpy.lastCall.args[0];
             payload.event.eventType.should.equal(16);
             done();
           };
@@ -314,7 +314,7 @@ describe('KAnalyticsPlugin', function () {
     const cm_sId = '15282f1c-fff6-4130-3351-cb8bd39f0cdd';
 
 
-    let CMconfig = {
+    const CMconfig = {
       id: cm_id,
       session: {
         "partnerID": cm_pId,
@@ -374,7 +374,7 @@ describe('KAnalyticsPlugin', function () {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.ready().then(() => {
-            let payload = sendSpy.lastCall.args[0];
+            const payload = sendSpy.lastCall.args[0];
             verifyPayloadProperties(payload.ks, payload.event);
             payload.event.seek.should.be.false;
             payload.event.eventType.should.not.equal(1);
@@ -390,7 +390,7 @@ describe('KAnalyticsPlugin', function () {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.ready().then(() => {
-            let payload = sendSpy.lastCall.args[0];
+            const payload = sendSpy.lastCall.args[0];
             verifyPayloadProperties(payload.ks, payload.event);
             payload.event.seek.should.be.false;
             payload.event.eventType.should.equal(2);
@@ -406,7 +406,7 @@ describe('KAnalyticsPlugin', function () {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.addEventListener(player.Event.FIRST_PLAY, () => {
-            let payload = sendSpy.lastCall.args[0];
+            const payload = sendSpy.lastCall.args[0];
             verifyPayloadProperties(payload.ks, payload.event);
             payload.event.seek.should.be.false;
             payload.event.eventType.should.equal(3);
@@ -422,14 +422,14 @@ describe('KAnalyticsPlugin', function () {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.addEventListener(player.Event.FIRST_PLAY, () => {
-            let payload = sendSpy.lastCall.args[0];
+            const payload = sendSpy.lastCall.args[0];
             payload.event.seek.should.be.false;
             done();
           });
           player.play();
         });
       });
-      let onSeeked = () => {
+      const onSeeked = () => {
         player.removeEventListener(player.Event.SEEKED, onSeeked);
         player.configure(CMconfig);
       };
@@ -444,7 +444,7 @@ describe('KAnalyticsPlugin', function () {
       player.addEventListener(player.Event.ENDED, () => {
         player.addEventListener(player.Event.LOADED_METADATA, () => {
           player.addEventListener(player.Event.PLAY, () => {
-            let payload = sendSpy.getCall(10).args[0];
+            const payload = sendSpy.getCall(10).args[0];
             payload.event.eventType.should.not.equal(16);
             done();
           });
@@ -459,12 +459,12 @@ describe('KAnalyticsPlugin', function () {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.addEventListener(player.Event.LOADED_METADATA, () => {
-            let onTimeUpdate = () => {
+            const onTimeUpdate = () => {
               player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-              let payload25 = sendSpy.getCall(9).args[0];
-              let payload50 = sendSpy.getCall(10).args[0];
-              let payload75 = sendSpy.getCall(11).args[0];
-              let payload100 = sendSpy.getCall(12).args[0];
+              const payload25 = sendSpy.getCall(9).args[0];
+              const payload50 = sendSpy.getCall(10).args[0];
+              const payload75 = sendSpy.getCall(11).args[0];
+              const payload100 = sendSpy.getCall(12).args[0];
               payload25.event.eventType.should.equal(4);
               payload50.event.eventType.should.equal(5);
               payload75.event.eventType.should.equal(6);
@@ -480,7 +480,7 @@ describe('KAnalyticsPlugin', function () {
       });
 
       player.addEventListener(player.Event.FIRST_PLAY, () => {
-        let onEnded = () => {
+        const onEnded = () => {
           player.removeEventListener(player.Event.TIME_UPDATE, onEnded);
           player.configure(CMconfig);
         };

@@ -1,6 +1,6 @@
 //@flow
 import {BasePlugin} from 'playkit-js'
-import StatsService from 'playkit-js-providers/dist/statsService'
+import {OVPStatsService, RequestBuilder} from 'playkit-js-providers/dist/playkit-stats-service'
 import EventTypes from './event-types'
 import Event from './event'
 
@@ -15,7 +15,7 @@ export default class KAnalytics extends BasePlugin {
    * @static
    */
   static defaultConfig: Object = {
-    baseUrl: '//stats.kaltura.com/api_v3/index.php',
+    serviceUrl: '//stats.kaltura.com/api_v3/index.php',
     hasKanalony: false
   };
 
@@ -95,7 +95,7 @@ export default class KAnalytics extends BasePlugin {
    * @return {void}
    */
   _registerListeners(): void {
-    let PlayerEvent = this.player.Event;
+    const PlayerEvent = this.player.Event;
     this.eventManager.listen(this.player, PlayerEvent.SOURCE_SELECTED, this._onSourceSelected.bind(this));
     this.eventManager.listen(this.player, PlayerEvent.FIRST_PLAY, this._sendAnalytics.bind(this, EventTypes.PLAY));
     this.eventManager.listen(this.player, PlayerEvent.PLAY, this._onPlay.bind(this));
@@ -162,7 +162,7 @@ export default class KAnalytics extends BasePlugin {
    * @return {void}
    */
   _sendSeekAnalytic(): void {
-    let now = new Date().getTime();
+    const now = new Date().getTime();
     if ((this._lastSeekEvent + SEEK_OFFSET < now) && (this.player.config.type !== LIVE || this.player.config.dvr)) {
       // avoid sending lots of seeking while scrubbing
       this._sendAnalytics(EventTypes.SEEK);
@@ -178,7 +178,7 @@ export default class KAnalytics extends BasePlugin {
    */
   _sendTimePercentAnalytic(): void {
     if (this.player.config.type !== LIVE) {
-      let percent = this.player.currentTime / this.player.duration;
+      const percent = this.player.currentTime / this.player.duration;
       if (!this._timePercentEvent.PLAY_REACHED_25 && percent >= .25) {
         this._timePercentEvent.PLAY_REACHED_25 = true;
         this._sendAnalytics(EventTypes.PLAY_REACHED_25);
@@ -223,20 +223,18 @@ export default class KAnalytics extends BasePlugin {
    * @return {void}
    */
   _sendAnalytics(eventType: number): void {
-    let statsEvent = new Event(eventType);
+    const statsEvent = new Event(eventType);
     statsEvent.currentPoint = this.player.currentTime;
     statsEvent.duration = this.player.duration;
     statsEvent.seek = this._hasSeeked;
     statsEvent.hasKanalony = this.config.hasKanalony;
     Object.assign(statsEvent, this._playerParams);
-
-    let request: RequestBuilder = StatsService.collect(this.config.playerVersion, this._ks, {"event": statsEvent}, this.config.baseUrl);
+    const request: RequestBuilder = OVPStatsService.collect(this.config.serviceUrl, this._ks, this.config.playerVersion, {"event": statsEvent});
     request.doHttpRequest()
       .then(() => {
-          this.logger.debug(`Analytics event sent `, statsEvent);
-        },
-        err => {
-          this.logger.error(`Failed to send analytics event `, statsEvent, err);
-        });
+        this.logger.debug(`Analytics event sent `, statsEvent);
+      }, err => {
+        this.logger.error(`Failed to send analytics event `, statsEvent, err);
+      });
   }
 }
