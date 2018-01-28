@@ -69,13 +69,13 @@ module.exports = {
       commonjs: "playkit-js",
       commonjs2: "playkit-js",
       amd: "playkit-js",
-      root: "Playkit"
+      root: ["playkit", "core"]
     },
     "playkit-js-providers": {
       commonjs: "playkit-js-providers",
       commonjs2: "playkit-js-providers",
       amd: "playkit-js-providers",
-      root: "PlaykitJsProviders"
+      root: ["playkit", "providers"]
     }
   }
 };
