@@ -262,10 +262,10 @@ describe('KAnalyticsPlugin', function () {
     it('should send 25% - 100%', (done) => {
       const onTimeUpdate = () => {
         player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-        const payload25 = sendSpy.getCall(0).args[0];
-        const payload50 = sendSpy.getCall(1).args[0];
-        const payload75 = sendSpy.getCall(2).args[0];
-        const payload100 = sendSpy.getCall(3).args[0];
+        const payload25 = sendSpy.getCall(1).args[0];
+        const payload50 = sendSpy.getCall(2).args[0];
+        const payload75 = sendSpy.getCall(3).args[0];
+        const payload100 = sendSpy.getCall(4).args[0];
         payload25.event.eventType.should.equal(4);
         payload50.event.eventType.should.equal(5);
         payload75.event.eventType.should.equal(6);
