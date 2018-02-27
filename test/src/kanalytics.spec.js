@@ -73,15 +73,11 @@ describe('KAnalyticsPlugin', function () {
       player = loadPlayer(config);
     });
 
-    it('should send widget loaded', (done) => {
-      player.ready().then(() => {
-        const payload = sendSpy.firstCall.args[0];
-        verifyPayloadProperties(payload.ks, payload.event);
-        payload.event.seek.should.be.false;
-        payload.event.eventType.should.equal(1);
-        done();
-      });
-      player.load();
+    it('should send widget loaded before load', () => {
+      const payload = sendSpy.firstCall.args[0];
+      verifyPayloadProperties(payload.ks, payload.event);
+      payload.event.seek.should.be.false;
+      payload.event.eventType.should.equal(1);
     });
 
     it('should send media loaded', (done) => {
