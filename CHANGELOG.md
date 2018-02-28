@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.2"></a>
+## [0.8.2](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.8.1...v0.8.2) (2018-02-28)
+
+
+### Bug Fixes
+
+* **FEC-7958:** widget loaded not sent when preload='none' ([#29](https://github.com/kaltura/playkit-js-kanalytics/issues/29)) ([5caa2f9](https://github.com/kaltura/playkit-js-kanalytics/commit/5caa2f9))
+
+
+
 <a name="0.8.1"></a>
 ## [0.8.1](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.7.0...v0.8.1) (2018-02-06)
 
