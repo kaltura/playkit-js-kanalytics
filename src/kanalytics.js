@@ -111,11 +111,11 @@ export default class KAnalytics extends BasePlugin {
    * @return {void}
    */
   _onSourceSelected(): void {
+    if (!this._widgetLoadedEventSent) {
+      this._sendAnalytics(EventTypes.WIDGET_LOADED);
+      this._widgetLoadedEventSent = true
+    }
     this.player.ready().then(() => {
-      if (!this._widgetLoadedEventSent) {
-        this._sendAnalytics(EventTypes.WIDGET_LOADED);
-        this._widgetLoadedEventSent = true
-      }
       this._sendAnalytics(EventTypes.MEDIA_LOADED);
     });
   }
