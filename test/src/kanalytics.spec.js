@@ -248,7 +248,7 @@ describe('KAnalyticsPlugin', function () {
 
     it('should send 100%', (done) => {
       player.addEventListener(player.Event.LOADED_METADATA, () => {
-        player.currentTime = 12.5;
+        player.getVideoElement().currentTime = 12.7;
       });
       player.addEventListener(player.Event.TIME_UPDATE, () => {
         const payload = sendSpy.lastCall.args[0];
@@ -274,7 +274,7 @@ describe('KAnalyticsPlugin', function () {
       };
       player.addEventListener(player.Event.LOADED_METADATA, () => {
         player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-        player.currentTime = 12.5;
+        player.getVideoElement().currentTime = 12.7;
       });
       player.load();
     });
@@ -469,10 +469,10 @@ describe('KAnalyticsPlugin', function () {
               done();
             };
             player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-            player.currentTime = 12.5;
+            player.getVideoElement().currentTime = 12.7;
           });
+          player.load();
         });
-        player.load();
       });
 
       player.addEventListener(player.Event.FIRST_PLAY, () => {
