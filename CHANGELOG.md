@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.3"></a>
+## [0.8.3](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.8.2...v0.8.3) (2018-04-16)
+
+
+### Bug Fixes
+
+* **FEC-8029:** play reached 100% event sent before ended ([#30](https://github.com/kaltura/playkit-js-kanalytics/issues/30)) ([bb062b9](https://github.com/kaltura/playkit-js-kanalytics/commit/bb062b9))
+
+
+
 <a name="0.8.2"></a>
 ## [0.8.2](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.8.1...v0.8.2) (2018-02-28)
 
