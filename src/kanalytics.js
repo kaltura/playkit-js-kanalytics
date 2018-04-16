@@ -191,7 +191,7 @@ export default class KAnalytics extends BasePlugin {
         this._timePercentEvent.PLAY_REACHED_75 = true;
         this._sendAnalytics(EventTypes.PLAY_REACHED_75);
       }
-      if (!this._timePercentEvent.PLAY_REACHED_100 && percent >= .98) {
+      if (!this._timePercentEvent.PLAY_REACHED_100 && percent >= 1) {
         this._timePercentEvent.PLAY_REACHED_100 = true;
         this._sendAnalytics(EventTypes.PLAY_REACHED_100);
       }
