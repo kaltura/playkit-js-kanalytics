@@ -35,7 +35,8 @@ describe('KAnalyticsPlugin', function () {
           sessionId: sId,
           uiConfId: uId,
           ks: ks,
-          partnerId: pId
+          partnerId: pId,
+          referrer: btoa(document.URL)
         }
       }
     };
@@ -60,7 +61,7 @@ describe('KAnalyticsPlugin', function () {
       event.widgetId.should.equal("_" + pId);
       event.uiConfId.should.equal(uId);
       event.entryId.should.equal(id);
-      event.referrer.should.equal(document.referrer);
+      event.referrer.should.equal(document.URL);
       event.hasKanalony.should.be.false;
       if (event.duration) {
         event.duration.should.equal(12.612);
@@ -332,7 +333,8 @@ describe('KAnalyticsPlugin', function () {
           sessionId: cm_sId,
           uiConfId: 654321,
           ks: cm_ks,
-          partnerId: 2046854
+          partnerId: 2046854,
+          referrer: btoa(document.URL)
         }
       }
     };
@@ -349,7 +351,7 @@ describe('KAnalyticsPlugin', function () {
       event.widgetId.should.equal("_" + cm_pId);
       event.uiConfId.should.equal(cm_uId);
       event.entryId.should.equal(cm_id);
-      event.referrer.should.equal(document.referrer);
+      event.referrer.should.equal(document.URL);
       event.hasKanalony.should.be.false;
       if (event.duration) {
         event.duration.should.equal(12.612);
