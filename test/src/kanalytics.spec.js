@@ -36,7 +36,7 @@ describe('KAnalyticsPlugin', function () {
           uiConfId: uId,
           ks: ks,
           partnerId: pId,
-          referrer: btoa(document.URL)
+          referrer: document.URL
         }
       }
     };
@@ -334,7 +334,7 @@ describe('KAnalyticsPlugin', function () {
           uiConfId: 654321,
           ks: cm_ks,
           partnerId: 2046854,
-          referrer: btoa(document.URL)
+          referrer: document.URL
         }
       }
     };
