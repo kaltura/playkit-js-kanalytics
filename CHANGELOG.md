@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.4"></a>
+## [0.8.4](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.8.3...v0.8.4) (2018-05-26)
+
+
+### Bug Fixes
+
+* **FEC-8228:** get referrer as config option ([#31](https://github.com/kaltura/playkit-js-kanalytics/issues/31)) ([00b1e58](https://github.com/kaltura/playkit-js-kanalytics/commit/00b1e58))
+
+
+
 <a name="0.8.3"></a>
 ## [0.8.3](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.8.2...v0.8.3) (2018-04-16)
 
