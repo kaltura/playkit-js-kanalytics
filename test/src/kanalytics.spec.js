@@ -487,4 +487,30 @@ describe('KAnalyticsPlugin', function () {
       });
     });
   });
+
+  describe('handle missing params', function(){
+    beforeEach(function () {
+      sandbox = sinon.sandbox.create();
+      sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
+    });
+    it('should not send report if partner id is missing', (done) => {
+      config.plugins.kanalytics.partnerId = "";
+      player = loadPlayer(config);
+      player.ready().then(() => {
+        sendSpy.callCount.should.equal(0);
+        done();
+      });
+      player.load();
+    });
+
+    it('should not send report if entry id is missing', (done) => {
+      config.plugins.kanalytics.entryId = "";
+      player = loadPlayer(config);
+      player.ready().then(() => {
+        sendSpy.callCount.should.equal(0);
+        done();
+      });
+      player.load();
+    });
+  })
 });
