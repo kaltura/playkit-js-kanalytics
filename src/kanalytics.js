@@ -223,6 +223,9 @@ export default class KAnalytics extends BasePlugin {
    * @return {void}
    */
   _sendAnalytics(eventType: number): void {
+    if (!this._validate()) {
+      return;
+    }
     const statsEvent = new Event(eventType);
     statsEvent.currentPoint = this.player.currentTime;
     statsEvent.duration = this.player.duration;
@@ -236,5 +239,21 @@ export default class KAnalytics extends BasePlugin {
       }, err => {
         this.logger.error(`Failed to send analytics event `, statsEvent, err);
       });
+  }
+
+  _validate(): boolean {
+    if (!this.config.partnerId) {
+      this._logMissingParam('partnerId');
+      return false;
+    }
+    if (!this.config.entryId) {
+      this._logMissingParam('entryId');
+      return false;
+    }
+    return true;
+  }
+
+  _logMissingParam(missingParam: string): void {
+    this.logger.warn(`block report because of missing param ${missingParam}`);
   }
 }
