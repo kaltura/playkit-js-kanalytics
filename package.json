@@ -1,6 +1,6 @@
 {
   "name": "playkit-js-kanalytics",
-  "version": "0.8.4",
+  "version": "0.9.0",
   "description": "",
   "main": "dist/playkit-kanalytics.js",
   "scripts": {
