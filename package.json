@@ -1,6 +1,6 @@
 {
   "name": "playkit-js-kanalytics",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "",
   "main": "dist/playkit-kanalytics.js",
   "scripts": {
@@ -53,8 +53,8 @@
     "karma-webpack": "^2.0.2",
     "mocha": "^3.2.0",
     "mocha-cli": "^1.0.1",
-    "playkit-js": "https://github.com/kaltura/playkit-js.git#v0.25.0",
-    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#v2.0.0",
+    "playkit-js": "https://github.com/kaltura/playkit-js.git#v0.28.0",
+    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#v2.3.2",
     "pre-push": "^0.1.1",
     "sinon": "^2.0.0",
     "sinon-chai": "^2.8.0",
@@ -66,8 +66,8 @@
   "keywords": [],
   "license": "AGPL-3.0",
   "peerDependencies": {
-    "playkit-js": "https://github.com/kaltura/playkit-js.git#v0.25.0",
-    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#v2.0.0"
+    "playkit-js": "https://github.com/kaltura/playkit-js.git#v0.28.0",
+    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#v2.3.2"
   },
   "repository": {
     "type": "git",
