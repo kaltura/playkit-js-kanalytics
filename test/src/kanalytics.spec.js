@@ -1,34 +1,37 @@
-import '../../src/index'
-import {loadPlayer} from 'playkit-js'
-import * as TestUtils from 'playkit-js/test/src/utils/test-utils'
+import '../../src/index';
+import {loadPlayer} from 'playkit-js';
+import * as TestUtils from 'playkit-js/test/src/utils/test-utils';
 
-describe('KAnalyticsPlugin', function () {
+describe('KAnalyticsPlugin', function() {
   let player, sandbox, sendSpy, config;
   const playerVersion = '1.2.3';
-  const ks = 'NTAwZjViZWZjY2NjNTRkNGEyMjU1MTg4OGE1NmUwNDljZWJkMzk1MXwxMDY4MjkyOzEwNjgyOTI7MTQ5MDE3NjE0NjswOzE0OTAwODk3NDYuMDIyNjswO3ZpZXc6Kix3aWRnZXQ6MTs7';
+  const ks =
+    'NTAwZjViZWZjY2NjNTRkNGEyMjU1MTg4OGE1NmUwNDljZWJkMzk1MXwxMDY4MjkyOzEwNjgyOTI7MTQ5MDE3NjE0NjswOzE0OTAwODk3NDYuMDIyNjswO3ZpZXc6Kix3aWRnZXQ6MTs7';
   const type = 'vod';
   const id = '1_rwbj3j0a';
   const pId = 1068292;
   const uId = 123456;
   const sId = '7296b4fd-3fcb-666d-51fc-34065579334c';
 
-  before(function () {
+  before(function() {
     config = {
       id: id,
       session: {
-        "partnerID": pId,
-        "ks": ks,
-        "uiConfID": uId
+        partnerID: pId,
+        ks: ks,
+        uiConfID: uId
       },
       sources: {
-        progressive: [{
-          "mimetype": "video/mp4",
-          "url": "https://www.w3schools.com/tags/movie.mp4",
-          "id": "1_rwbj3j0a_11311,applehttp"
-        }]
+        progressive: [
+          {
+            mimetype: 'video/mp4',
+            url: 'https://www.w3schools.com/tags/movie.mp4',
+            id: '1_rwbj3j0a_11311,applehttp'
+          }
+        ]
       },
       plugins: {
-        'kanalytics': {
+        kanalytics: {
           playerVersion: playerVersion,
           entryId: id,
           entryType: type,
@@ -42,13 +45,13 @@ describe('KAnalyticsPlugin', function () {
     };
   });
 
-  afterEach(function () {
+  afterEach(function() {
     sandbox.restore();
     player.destroy();
     TestUtils.removeVideoElementsFromTestPage();
   });
 
-  describe('Basic Playback', function () {
+  describe('Basic Playback', function() {
     /**
      * @param {string} ks - ks
      * @param {Object} event - event
@@ -58,7 +61,7 @@ describe('KAnalyticsPlugin', function () {
       ks.should.equal(ks);
       event.clientVer.should.equal(playerVersion);
       event.partnerId.should.equal(pId);
-      event.widgetId.should.equal("_" + pId);
+      event.widgetId.should.equal('_' + pId);
       event.uiConfId.should.equal(uId);
       event.entryId.should.equal(id);
       event.referrer.should.equal(document.URL);
@@ -68,7 +71,7 @@ describe('KAnalyticsPlugin', function () {
       }
     }
 
-    beforeEach(function () {
+    beforeEach(function() {
       sandbox = sinon.sandbox.create();
       sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
       player = loadPlayer(config);
@@ -81,7 +84,7 @@ describe('KAnalyticsPlugin', function () {
       payload.event.eventType.should.equal(1);
     });
 
-    it('should send media loaded', (done) => {
+    it('should send media loaded', done => {
       player.ready().then(() => {
         const payload = sendSpy.lastCall.args[0];
         verifyPayloadProperties(payload.ks, payload.event);
@@ -92,7 +95,7 @@ describe('KAnalyticsPlugin', function () {
       player.load();
     });
 
-    it('should send first play', (done) => {
+    it('should send first play', done => {
       player.addEventListener(player.Event.FIRST_PLAY, () => {
         const payload = sendSpy.lastCall.args[0];
         verifyPayloadProperties(payload.ks, payload.event);
@@ -103,7 +106,7 @@ describe('KAnalyticsPlugin', function () {
       player.play();
     });
 
-    it('should send replay', (done) => {
+    it('should send replay', done => {
       player.addEventListener(player.Event.FIRST_PLAY, () => {
         player.currentTime = player.duration - 1;
       });
@@ -120,7 +123,7 @@ describe('KAnalyticsPlugin', function () {
       player.play();
     });
 
-    it('should send seek on playing', (done) => {
+    it('should send seek on playing', done => {
       player.addEventListener(player.Event.FIRST_PLAY, () => {
         player.currentTime = player.duration / 2;
       });
@@ -134,7 +137,7 @@ describe('KAnalyticsPlugin', function () {
       player.play();
     });
 
-    it('should send seek before playing', (done) => {
+    it('should send seek before playing', done => {
       player.addEventListener(player.Event.LOADED_METADATA, () => {
         player.currentTime = player.duration / 2;
       });
@@ -148,7 +151,7 @@ describe('KAnalyticsPlugin', function () {
       player.load();
     });
 
-    it('should not send seek for live', (done) => {
+    it('should not send seek for live', done => {
       player._config.type = 'Live';
       player.addEventListener(player.Event.FIRST_PLAY, () => {
         player.currentTime = player.duration / 2;
@@ -161,7 +164,7 @@ describe('KAnalyticsPlugin', function () {
       player.play();
     });
 
-    it('should send seek for live + dvr', (done) => {
+    it('should send seek for live + dvr', done => {
       player._config.type = 'Live';
       player._config.dvr = true;
       player.addEventListener(player.Event.FIRST_PLAY, () => {
@@ -176,12 +179,13 @@ describe('KAnalyticsPlugin', function () {
     });
     it('should send buffer start', () => {
       player.dispatchEvent({
-        type: player.Event.PLAYER_STATE_CHANGED, payload: {
-          'newState': {
-            'type': player.State.BUFFERING
+        type: player.Event.PLAYER_STATE_CHANGED,
+        payload: {
+          newState: {
+            type: player.State.BUFFERING
           },
-          'oldState': {
-            'type': player.State.PLAYING
+          oldState: {
+            type: player.State.PLAYING
           }
         }
       });
@@ -193,12 +197,13 @@ describe('KAnalyticsPlugin', function () {
 
     it('should send buffer end', () => {
       player.dispatchEvent({
-        type: player.Event.PLAYER_STATE_CHANGED, payload: {
-          'newState': {
-            'type': player.State.PLAYING
+        type: player.Event.PLAYER_STATE_CHANGED,
+        payload: {
+          newState: {
+            type: player.State.PLAYING
           },
-          'oldState': {
-            'type': player.State.BUFFERING
+          oldState: {
+            type: player.State.BUFFERING
           }
         }
       });
@@ -208,7 +213,7 @@ describe('KAnalyticsPlugin', function () {
       payload.event.eventType.should.equal(13);
     });
 
-    it('should send 25%', (done) => {
+    it('should send 25%', done => {
       player.addEventListener(player.Event.LOADED_METADATA, () => {
         player.currentTime = 4;
       });
@@ -221,7 +226,7 @@ describe('KAnalyticsPlugin', function () {
       player.load();
     });
 
-    it('should send 50%', (done) => {
+    it('should send 50%', done => {
       player.addEventListener(player.Event.LOADED_METADATA, () => {
         player.currentTime = 7;
       });
@@ -234,7 +239,7 @@ describe('KAnalyticsPlugin', function () {
       player.load();
     });
 
-    it('should send 75%', (done) => {
+    it('should send 75%', done => {
       player.addEventListener(player.Event.LOADED_METADATA, () => {
         player.currentTime = 10;
       });
@@ -247,7 +252,7 @@ describe('KAnalyticsPlugin', function () {
       player.load();
     });
 
-    it('should send 100%', (done) => {
+    it('should send 100%', done => {
       player.addEventListener(player.Event.LOADED_METADATA, () => {
         player.getVideoElement().currentTime = 12.7;
       });
@@ -260,7 +265,7 @@ describe('KAnalyticsPlugin', function () {
       player.load();
     });
 
-    it('should send 25% - 100%', (done) => {
+    it('should send 25% - 100%', done => {
       const onTimeUpdate = () => {
         player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
         const payload25 = sendSpy.getCall(1).args[0];
@@ -280,7 +285,7 @@ describe('KAnalyticsPlugin', function () {
       player.load();
     });
 
-    it('should not send 25% - 100% again while replay', (done) => {
+    it('should not send 25% - 100% again while replay', done => {
       player.addEventListener(player.Event.FIRST_PLAY, () => {
         player.currentTime = player.duration - 1;
       });
@@ -301,29 +306,30 @@ describe('KAnalyticsPlugin', function () {
     });
   });
 
-  describe('Change Media', function () {
-
-    const cm_ks = 'MGI3MzFmMmUwN2IyYmYzN2IxOGEzZjFjMTAzM2U4NTg5MTgyY2MyZnwxMDkxOzEwOTE7MTUwNjY5Mjc0MzswOzE1MDY2MDYzNDMuMTE0MjswO3ZpZXc6Kix3aWRnZXQ6MTs7';
+  describe('Change Media', function() {
+    const cm_ks =
+      'MGI3MzFmMmUwN2IyYmYzN2IxOGEzZjFjMTAzM2U4NTg5MTgyY2MyZnwxMDkxOzEwOTE7MTUwNjY5Mjc0MzswOzE1MDY2MDYzNDMuMTE0MjswO3ZpZXc6Kix3aWRnZXQ6MTs7';
     const cm_type = 'live';
     const cm_id = '1_fdsguh765';
     const cm_pId = 2046854;
     const cm_uId = 654321;
     const cm_sId = '15282f1c-fff6-4130-3351-cb8bd39f0cdd';
 
-
     const CMconfig = {
       id: cm_id,
       session: {
-        "partnerID": cm_pId,
-        "ks": cm_ks,
-        "uiConfID": cm_uId
+        partnerID: cm_pId,
+        ks: cm_ks,
+        uiConfID: cm_uId
       },
       sources: {
-        progressive: [{
-          "mimetype": "video/mp4",
-          "url": "https://www.w3schools.com/tags/movie.mp4",
-          "id": "1_fdsguh765_11311,applehttp"
-        }]
+        progressive: [
+          {
+            mimetype: 'video/mp4',
+            url: 'https://www.w3schools.com/tags/movie.mp4',
+            id: '1_fdsguh765_11311,applehttp'
+          }
+        ]
       },
       plugins: {
         kanalytics: {
@@ -348,7 +354,7 @@ describe('KAnalyticsPlugin', function () {
       ks.should.equal(cm_ks);
       event.clientVer.should.equal(playerVersion);
       event.partnerId.should.equal(cm_pId);
-      event.widgetId.should.equal("_" + cm_pId);
+      event.widgetId.should.equal('_' + cm_pId);
       event.uiConfId.should.equal(cm_uId);
       event.entryId.should.equal(cm_id);
       event.referrer.should.equal(document.URL);
@@ -358,7 +364,7 @@ describe('KAnalyticsPlugin', function () {
       }
     }
 
-    beforeEach(function () {
+    beforeEach(function() {
       sandbox = sinon.sandbox.create();
       sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
       player = loadPlayer(config);
@@ -368,7 +374,7 @@ describe('KAnalyticsPlugin', function () {
       player.load();
     });
 
-    it('should not send widget loaded on change media', (done) => {
+    it('should not send widget loaded on change media', done => {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.ready().then(() => {
@@ -384,7 +390,7 @@ describe('KAnalyticsPlugin', function () {
       player.configure(CMconfig);
     });
 
-    it('should send media loaded', (done) => {
+    it('should send media loaded', done => {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.ready().then(() => {
@@ -400,7 +406,7 @@ describe('KAnalyticsPlugin', function () {
       player.configure(CMconfig);
     });
 
-    it('should send first play', (done) => {
+    it('should send first play', done => {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.addEventListener(player.Event.FIRST_PLAY, () => {
@@ -416,7 +422,7 @@ describe('KAnalyticsPlugin', function () {
       player.configure(CMconfig);
     });
 
-    it('seek should be false', (done) => {
+    it('seek should be false', done => {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.addEventListener(player.Event.FIRST_PLAY, () => {
@@ -435,7 +441,7 @@ describe('KAnalyticsPlugin', function () {
       player.currentTime = 5;
     });
 
-    it('should not send replay if change media on ended', (done) => {
+    it('should not send replay if change media on ended', done => {
       player.addEventListener(player.Event.FIRST_PLAY, () => {
         player.currentTime = player.duration - 1;
       });
@@ -453,7 +459,7 @@ describe('KAnalyticsPlugin', function () {
       });
     });
 
-    it('should send 25% - 100% again while change media ', (done) => {
+    it('should send 25% - 100% again while change media ', done => {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.addEventListener(player.Event.LOADED_METADATA, () => {
@@ -488,13 +494,13 @@ describe('KAnalyticsPlugin', function () {
     });
   });
 
-  describe('handle missing params', function(){
-    beforeEach(function () {
+  describe('handle missing params', function() {
+    beforeEach(function() {
       sandbox = sinon.sandbox.create();
       sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
     });
-    it('should not send report if partner id is missing', (done) => {
-      config.plugins.kanalytics.partnerId = "";
+    it('should not send report if partner id is missing', done => {
+      config.plugins.kanalytics.partnerId = '';
       player = loadPlayer(config);
       player.ready().then(() => {
         sendSpy.callCount.should.equal(0);
@@ -503,8 +509,8 @@ describe('KAnalyticsPlugin', function () {
       player.load();
     });
 
-    it('should not send report if entry id is missing', (done) => {
-      config.plugins.kanalytics.entryId = "";
+    it('should not send report if entry id is missing', done => {
+      config.plugins.kanalytics.entryId = '';
       player = loadPlayer(config);
       player.ready().then(() => {
         sendSpy.callCount.should.equal(0);
@@ -512,5 +518,5 @@ describe('KAnalyticsPlugin', function () {
       });
       player.load();
     });
-  })
+  });
 });

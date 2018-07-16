@@ -1,8 +1,8 @@
 //@flow
-import {BasePlugin} from 'playkit-js'
-import {OVPStatsService, RequestBuilder} from 'playkit-js-providers/dist/playkit-stats-service'
-import EventTypes from './event-types'
-import Event from './event'
+import {BasePlugin} from 'playkit-js';
+import {OVPStatsService, RequestBuilder} from 'playkit-js-providers/dist/playkit-stats-service';
+import EventTypes from './event-types';
+import Event from './event';
 
 const SEEK_OFFSET: number = 2000;
 const LIVE: string = 'Live';
@@ -47,12 +47,12 @@ export default class KAnalytics extends BasePlugin {
    * The Kaltura session
    * @private
    */
-  _ks: string = "";
+  _ks: string = '';
   /**
    * Indicate whether time percent event already sent
    * @private
    */
-  _timePercentEvent: { [event: string]: boolean } = {};
+  _timePercentEvent: {[event: string]: boolean} = {};
   /**
    * Indicate whether widget loaded event already sent
    * @private
@@ -77,7 +77,7 @@ export default class KAnalytics extends BasePlugin {
   reset(): void {
     this._hasSeeked = false;
     this._ended = false;
-    this._ks = "";
+    this._ks = '';
     this._timePercentEvent = {};
   }
 
@@ -113,7 +113,7 @@ export default class KAnalytics extends BasePlugin {
   _onSourceSelected(): void {
     if (!this._widgetLoadedEventSent) {
       this._sendAnalytics(EventTypes.WIDGET_LOADED);
-      this._widgetLoadedEventSent = true
+      this._widgetLoadedEventSent = true;
     }
     this.player.ready().then(() => {
       this._sendAnalytics(EventTypes.MEDIA_LOADED);
@@ -163,7 +163,7 @@ export default class KAnalytics extends BasePlugin {
    */
   _sendSeekAnalytic(): void {
     const now = new Date().getTime();
-    if ((this._lastSeekEvent + SEEK_OFFSET < now) && (this.player.config.type !== LIVE || this.player.config.dvr)) {
+    if (this._lastSeekEvent + SEEK_OFFSET < now && (this.player.config.type !== LIVE || this.player.config.dvr)) {
       // avoid sending lots of seeking while scrubbing
       this._sendAnalytics(EventTypes.SEEK);
       this._hasSeeked = true;
@@ -179,15 +179,15 @@ export default class KAnalytics extends BasePlugin {
   _sendTimePercentAnalytic(): void {
     if (this.player.config.type !== LIVE) {
       const percent = this.player.currentTime / this.player.duration;
-      if (!this._timePercentEvent.PLAY_REACHED_25 && percent >= .25) {
+      if (!this._timePercentEvent.PLAY_REACHED_25 && percent >= 0.25) {
         this._timePercentEvent.PLAY_REACHED_25 = true;
         this._sendAnalytics(EventTypes.PLAY_REACHED_25);
       }
-      if (!this._timePercentEvent.PLAY_REACHED_50 && percent >= .50) {
+      if (!this._timePercentEvent.PLAY_REACHED_50 && percent >= 0.5) {
         this._timePercentEvent.PLAY_REACHED_50 = true;
         this._sendAnalytics(EventTypes.PLAY_REACHED_50);
       }
-      if (!this._timePercentEvent.PLAY_REACHED_75 && percent >= .75) {
+      if (!this._timePercentEvent.PLAY_REACHED_75 && percent >= 0.75) {
         this._timePercentEvent.PLAY_REACHED_75 = true;
         this._sendAnalytics(EventTypes.PLAY_REACHED_75);
       }
@@ -211,7 +211,7 @@ export default class KAnalytics extends BasePlugin {
       sessionId: this.config.sessionId,
       uiConfId: this.config.uiConfId || 0,
       partnerId: this.config.partnerId,
-      widgetId: this.config.partnerId ? "_" + this.config.partnerId : "",
+      widgetId: this.config.partnerId ? '_' + this.config.partnerId : '',
       referrer: this.config.referrer
     };
   }
@@ -232,13 +232,15 @@ export default class KAnalytics extends BasePlugin {
     statsEvent.seek = this._hasSeeked;
     statsEvent.hasKanalony = this.config.hasKanalony;
     Object.assign(statsEvent, this._playerParams);
-    const request: RequestBuilder = OVPStatsService.collect(this.config.serviceUrl, this._ks, this.config.playerVersion, {"event": statsEvent});
-    request.doHttpRequest()
-      .then(() => {
+    const request: RequestBuilder = OVPStatsService.collect(this.config.serviceUrl, this._ks, this.config.playerVersion, {event: statsEvent});
+    request.doHttpRequest().then(
+      () => {
         this.logger.debug(`Analytics event sent `, statsEvent);
-      }, err => {
+      },
+      err => {
         this.logger.error(`Failed to send analytics event `, statsEvent, err);
-      });
+      }
+    );
   }
 
   _validate(): boolean {

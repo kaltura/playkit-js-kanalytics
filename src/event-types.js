@@ -1,5 +1,5 @@
 //@flow
-const EVENT_TYPES: { [event: string]: number } = {
+const EVENT_TYPES: {[event: string]: number} = {
   WIDGET_LOADED: 1,
   MEDIA_LOADED: 2,
   PLAY: 3,
