@@ -98,5 +98,8 @@
   "bugs": {
     "url": "https://github.com/kaltura/playkit-js-kanalytics/issues"
   },
-  "homepage": "https://github.com/kaltura/playkit-js-kanalytics#readme"
+  "homepage": "https://github.com/kaltura/playkit-js-kanalytics#readme",
+  "kcc": {
+    "name": "playkit-kanalytics"
+  }
 }
