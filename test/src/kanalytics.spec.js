@@ -57,15 +57,16 @@ describe('KAnalyticsPlugin', function() {
      * @param {Object} event - event
      * @return {void}
      */
-    function verifyPayloadProperties(ks, event) {
-      ks.should.equal(ks);
+    function verifyPayloadProperties(payload) {
+      payload.ks.should.equal(ks);
+      const event = payload.event;
       event.clientVer.should.equal(playerVersion);
       event.partnerId.should.equal(pId);
       event.widgetId.should.equal('_' + pId);
       event.uiConfId.should.equal(uId);
       event.entryId.should.equal(id);
       event.referrer.should.equal(document.URL);
-      event.hasKanalony.should.be.false;
+      payload.hasKanalony.should.be.false;
       if (event.duration) {
         event.duration.should.equal(12.612);
       }
@@ -79,7 +80,7 @@ describe('KAnalyticsPlugin', function() {
 
     it('should send widget loaded before load', () => {
       const payload = sendSpy.firstCall.args[0];
-      verifyPayloadProperties(payload.ks, payload.event);
+      verifyPayloadProperties(payload);
       payload.event.seek.should.be.false;
       payload.event.eventType.should.equal(1);
     });
@@ -87,7 +88,7 @@ describe('KAnalyticsPlugin', function() {
     it('should send media loaded', done => {
       player.ready().then(() => {
         const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload.ks, payload.event);
+        verifyPayloadProperties(payload);
         payload.event.seek.should.be.false;
         payload.event.eventType.should.equal(2);
         done();
@@ -98,7 +99,7 @@ describe('KAnalyticsPlugin', function() {
     it('should send first play', done => {
       player.addEventListener(player.Event.FIRST_PLAY, () => {
         const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload.ks, payload.event);
+        verifyPayloadProperties(payload);
         payload.event.seek.should.be.false;
         payload.event.eventType.should.equal(3);
         done();
@@ -113,7 +114,7 @@ describe('KAnalyticsPlugin', function() {
       player.addEventListener(player.Event.ENDED, () => {
         player.addEventListener(player.Event.PLAY, () => {
           const payload = sendSpy.lastCall.args[0];
-          verifyPayloadProperties(payload.ks, payload.event);
+          verifyPayloadProperties(payload);
           payload.event.seek.should.be.true;
           payload.event.eventType.should.equal(16);
           done();
@@ -129,7 +130,7 @@ describe('KAnalyticsPlugin', function() {
       });
       player.addEventListener(player.Event.SEEKED, () => {
         const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload.ks, payload.event);
+        verifyPayloadProperties(payload);
         payload.event.seek.should.be.false;
         payload.event.eventType.should.equal(17);
         done();
@@ -143,7 +144,7 @@ describe('KAnalyticsPlugin', function() {
       });
       player.addEventListener(player.Event.SEEKED, () => {
         const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload.ks, payload.event);
+        verifyPayloadProperties(payload);
         payload.event.seek.should.be.false;
         payload.event.eventType.should.equal(17);
         done();
@@ -190,7 +191,7 @@ describe('KAnalyticsPlugin', function() {
         }
       });
       const payload = sendSpy.lastCall.args[0];
-      verifyPayloadProperties(payload.ks, payload.event);
+      verifyPayloadProperties(payload);
       payload.event.seek.should.be.false;
       payload.event.eventType.should.equal(12);
     });
@@ -208,7 +209,7 @@ describe('KAnalyticsPlugin', function() {
         }
       });
       const payload = sendSpy.lastCall.args[0];
-      verifyPayloadProperties(payload.ks, payload.event);
+      verifyPayloadProperties(payload);
       payload.event.seek.should.be.false;
       payload.event.eventType.should.equal(13);
     });
@@ -219,7 +220,7 @@ describe('KAnalyticsPlugin', function() {
       });
       player.addEventListener(player.Event.TIME_UPDATE, () => {
         const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload.ks, payload.event);
+        verifyPayloadProperties(payload);
         payload.event.eventType.should.equal(4);
         done();
       });
@@ -232,7 +233,7 @@ describe('KAnalyticsPlugin', function() {
       });
       player.addEventListener(player.Event.TIME_UPDATE, () => {
         const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload.ks, payload.event);
+        verifyPayloadProperties(payload);
         payload.event.eventType.should.equal(5);
         done();
       });
@@ -245,7 +246,7 @@ describe('KAnalyticsPlugin', function() {
       });
       player.addEventListener(player.Event.TIME_UPDATE, () => {
         const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload.ks, payload.event);
+        verifyPayloadProperties(payload);
         payload.event.eventType.should.equal(6);
         done();
       });
@@ -258,7 +259,7 @@ describe('KAnalyticsPlugin', function() {
       });
       player.addEventListener(player.Event.TIME_UPDATE, () => {
         const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload.ks, payload.event);
+        verifyPayloadProperties(payload);
         payload.event.eventType.should.equal(7);
         done();
       });
@@ -346,19 +347,19 @@ describe('KAnalyticsPlugin', function() {
     };
 
     /**
-     * @param {string} ks - ks
      * @param {Object} event - event
      * @return {void}
      */
-    function verifyPayloadProperties(ks, event) {
-      ks.should.equal(cm_ks);
+    function verifyPayloadProperties(payload) {
+      payload.ks.should.equal(cm_ks);
+      const event = payload.event;
       event.clientVer.should.equal(playerVersion);
       event.partnerId.should.equal(cm_pId);
       event.widgetId.should.equal('_' + cm_pId);
       event.uiConfId.should.equal(cm_uId);
       event.entryId.should.equal(cm_id);
       event.referrer.should.equal(document.URL);
-      event.hasKanalony.should.be.false;
+      payload.hasKanalony.should.be.false;
       if (event.duration) {
         event.duration.should.equal(12.612);
       }
@@ -379,7 +380,7 @@ describe('KAnalyticsPlugin', function() {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.ready().then(() => {
             const payload = sendSpy.lastCall.args[0];
-            verifyPayloadProperties(payload.ks, payload.event);
+            verifyPayloadProperties(payload);
             payload.event.seek.should.be.false;
             payload.event.eventType.should.not.equal(1);
             done();
@@ -395,7 +396,7 @@ describe('KAnalyticsPlugin', function() {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.ready().then(() => {
             const payload = sendSpy.lastCall.args[0];
-            verifyPayloadProperties(payload.ks, payload.event);
+            verifyPayloadProperties(payload);
             payload.event.seek.should.be.false;
             payload.event.eventType.should.equal(2);
             done();
@@ -411,7 +412,7 @@ describe('KAnalyticsPlugin', function() {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.addEventListener(player.Event.FIRST_PLAY, () => {
             const payload = sendSpy.lastCall.args[0];
-            verifyPayloadProperties(payload.ks, payload.event);
+            verifyPayloadProperties(payload);
             payload.event.seek.should.be.false;
             payload.event.eventType.should.equal(3);
             done();
@@ -473,7 +474,7 @@ describe('KAnalyticsPlugin', function() {
               payload50.event.eventType.should.equal(5);
               payload75.event.eventType.should.equal(6);
               payload100.event.eventType.should.equal(7);
-              verifyPayloadProperties(payload25.ks, payload25.event);
+              verifyPayloadProperties(payload25);
               done();
             };
             player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
