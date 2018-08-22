@@ -1,6 +1,6 @@
 {
-  "name": "playkit-js-kanalytics",
-  "version": "0.9.1",
+  "name": "@playkit-js/playkit-js-kanalytics",
+  "version": "0.9.0",
   "description": "",
   "main": "dist/playkit-kanalytics.js",
   "scripts": {
@@ -11,10 +11,9 @@
     "watch": "webpack --progress --colors --watch",
     "test": "NODE_ENV=test karma start --color",
     "release": "standard-version",
-    "publish": "git push --follow-tags --no-verify origin master",
+    "pushTaggedRelease": "git push --follow-tags --no-verify origin master",
     "eslint": "eslint . --color",
     "flow": "flow check",
-    "commit:dist": "git add --force --all dist && (git commit -m 'chore: update dist' || exit 0)",
     "precommit": "lint-staged"
   },
   "lint-staged": {
@@ -27,10 +26,8 @@
       "git add"
     ]
   },
-  "standard-version": {
-    "scripts": {
-      "postbump": "yarn run build && npm run commit:dist"
-    }
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
@@ -79,12 +76,21 @@
     "webpack": "latest",
     "webpack-dev-server": "latest"
   },
-  "keywords": [],
-  "license": "AGPL-3.0",
   "peerDependencies": {
     "playkit-js": "https://github.com/kaltura/playkit-js.git#v0.29.0",
     "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#v2.5.0"
   },
+  "keywords": [
+    "kaltura",
+    "analytics",
+    "QOE",
+    "QOS",
+    "player",
+    "playkit-js",
+    "playkit-js-kanalytics",
+    "html5 player"
+  ],
+  "license": "AGPL-3.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kaltura/playkit-js-kanalytics.git"
@@ -92,5 +98,8 @@
   "bugs": {
     "url": "https://github.com/kaltura/playkit-js-kanalytics/issues"
   },
-  "homepage": "https://github.com/kaltura/playkit-js-kanalytics#readme"
+  "homepage": "https://github.com/kaltura/playkit-js-kanalytics#readme",
+  "kcc": {
+    "name": "playkit-kanalytics"
+  }
 }
