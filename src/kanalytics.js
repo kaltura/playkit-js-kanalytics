@@ -230,9 +230,12 @@ export default class KAnalytics extends BasePlugin {
     statsEvent.currentPoint = this.player.currentTime;
     statsEvent.duration = this.player.duration;
     statsEvent.seek = this._hasSeeked;
-    statsEvent.hasKanalony = this.config.hasKanalony;
     Object.assign(statsEvent, this._playerParams);
-    const request: RequestBuilder = OVPStatsService.collect(this.config.serviceUrl, this._ks, this.config.playerVersion, {event: statsEvent});
+    const eventData = {
+      event: statsEvent,
+      hasKanalony: this.config.hasKanalony
+    };
+    const request: RequestBuilder = OVPStatsService.collect(this.config.serviceUrl, this._ks, this.config.playerVersion, eventData);
     request.doHttpRequest().then(
       () => {
         this.logger.debug(`Analytics event sent `, statsEvent);
