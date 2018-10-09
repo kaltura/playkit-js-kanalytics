@@ -205,7 +205,7 @@ export default class KAnalytics extends BasePlugin {
    */
   get _playerParams(): Object {
     this._ks = this.config.ks;
-    return {
+    const params: Object = {
       clientVer: this.config.playerVersion,
       entryId: this.config.entryId,
       sessionId: this.config.sessionId,
@@ -214,6 +214,10 @@ export default class KAnalytics extends BasePlugin {
       widgetId: this.config.partnerId ? '_' + this.config.partnerId : '',
       referrer: this.config.referrer
     };
+    if (this.config.playlistId) {
+      params['playlistId'] = this.config.playlistId;
+    }
+    return params;
   }
 
   /**

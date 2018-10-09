@@ -25,6 +25,10 @@ export default class Event {
    */
   entryId: string;
   /**
+   * The playlist id
+   */
+  playlistId: ?string;
+  /**
    * The widget id
    */
   widgetId: string;
