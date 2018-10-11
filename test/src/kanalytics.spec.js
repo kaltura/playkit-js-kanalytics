@@ -70,6 +70,7 @@ describe('KAnalyticsPlugin', function() {
       if (event.duration) {
         event.duration.should.equal(12.612);
       }
+      ('playlistId' in event).should.be.false;
     }
 
     beforeEach(function() {
@@ -312,6 +313,7 @@ describe('KAnalyticsPlugin', function() {
       'MGI3MzFmMmUwN2IyYmYzN2IxOGEzZjFjMTAzM2U4NTg5MTgyY2MyZnwxMDkxOzEwOTE7MTUwNjY5Mjc0MzswOzE1MDY2MDYzNDMuMTE0MjswO3ZpZXc6Kix3aWRnZXQ6MTs7';
     const cm_type = 'live';
     const cm_id = '1_fdsguh765';
+    const cm_plId = '12345678';
     const cm_pId = 2046854;
     const cm_uId = 654321;
     const cm_sId = '15282f1c-fff6-4130-3351-cb8bd39f0cdd';
@@ -336,6 +338,7 @@ describe('KAnalyticsPlugin', function() {
         kanalytics: {
           playerVersion: playerVersion,
           entryId: cm_id,
+          playlistId: cm_plId,
           entryType: cm_type,
           sessionId: cm_sId,
           uiConfId: 654321,
@@ -358,6 +361,7 @@ describe('KAnalyticsPlugin', function() {
       event.widgetId.should.equal('_' + cm_pId);
       event.uiConfId.should.equal(cm_uId);
       event.entryId.should.equal(cm_id);
+      event.playlistId.should.equal(cm_plId);
       event.referrer.should.equal(document.URL);
       payload.hasKanalony.should.be.false;
       if (event.duration) {
