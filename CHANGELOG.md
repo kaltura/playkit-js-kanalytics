@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.10.0"></a>
+# [0.10.0](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.9.1...v0.10.0) (2018-10-28)
+
+
+### Features
+
+* **FEC-8452:** playlist ([#37](https://github.com/kaltura/playkit-js-kanalytics/issues/37)) ([2646f27](https://github.com/kaltura/playkit-js-kanalytics/commit/2646f27))
+
+
+
 <a name="0.9.1"></a>
 ## [0.9.1](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.9.0...v0.9.1) (2018-08-22)
 
