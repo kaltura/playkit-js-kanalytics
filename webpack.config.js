@@ -26,6 +26,7 @@ module.exports = {
     filename: '[name].js',
     library: ['playkit', 'kanalytics'],
     libraryTarget: 'umd',
+    umdNamedDefine: true,
     devtoolModuleFilenameTemplate: './kanalytics/[resource-path]'
   },
   devtool: 'source-map',
