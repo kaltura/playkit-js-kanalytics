@@ -1,6 +1,6 @@
 import '../../src/index';
 import {loadPlayer} from '@playkit-js/playkit-js';
-import * as TestUtils from 'playkit-js/test/src/utils/test-utils';
+import * as TestUtils from '@playkit-js/playkit-js/test/src/utils/test-utils';
 
 describe('KAnalyticsPlugin', function () {
   let player, sandbox, sendSpy, config;

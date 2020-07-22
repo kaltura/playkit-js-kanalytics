@@ -72,7 +72,7 @@ module.exports = {
       commonjs: 'playkit-js-providers',
       commonjs2: 'playkit-js-providers',
       amd: 'playkit-js-providers',
-      root: ['playkit', 'providers']
+      root: ['KalturaPlayer', 'providers']
     }
   },
   optimization: {
