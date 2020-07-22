@@ -56,21 +56,22 @@ Finally, add the bundle as a script tag in your page, and initialize the player
 <script type="text/javascript" src="/PATH/TO/FILE/playkit.js"></script>
 <script type="text/javascript" src="/PATH/TO/FILE/playkit-kanalytics.js"></script>
 <div id="player-placeholder" style="height:360px; width:640px">
-<script type="text/javascript">
-var playerContainer = document.querySelector("#player-placeholder");
-var config = {
- ...
- plugins: {
-   kanalytics: {
-     serviceUrl: 'http://stats.kaltura.com/api_v3/index.php'
-   }
- }
- ...
-};
-var player = playkit.core.loadPlayer(config);
-playerContainer.appendChild(player.getView());
-player.play();
-</script>
+  <script type="text/javascript">
+    var playerContainer = document.querySelector("#player-placeholder");
+    var config = {
+     ...
+     plugins: {
+       kanalytics: {
+         serviceUrl: 'http://stats.kaltura.com/api_v3/index.php'
+       }
+     }
+     ...
+    };
+    var player = playkit.core.loadPlayer(config);
+    playerContainer.appendChild(player.getView());
+    player.play();
+  </script>
+</div>
 ```
 
 ## Configuration

@@ -1,8 +1,8 @@
 import '../../src/index';
-import {loadPlayer} from 'playkit-js';
+import {loadPlayer} from '@playkit-js/playkit-js';
 import * as TestUtils from 'playkit-js/test/src/utils/test-utils';
 
-describe('KAnalyticsPlugin', function() {
+describe('KAnalyticsPlugin', function () {
   let player, sandbox, sendSpy, config;
   const playerVersion = '1.2.3';
   const ks =
@@ -13,7 +13,7 @@ describe('KAnalyticsPlugin', function() {
   const uId = 123456;
   const sId = '7296b4fd-3fcb-666d-51fc-34065579334c';
 
-  before(function() {
+  before(function () {
     config = {
       id: id,
       session: {
@@ -45,13 +45,13 @@ describe('KAnalyticsPlugin', function() {
     };
   });
 
-  afterEach(function() {
+  afterEach(function () {
     sandbox.restore();
     player.destroy();
     TestUtils.removeVideoElementsFromTestPage();
   });
 
-  describe('Basic Playback', function() {
+  describe('Basic Playback', function () {
     /**
      * @param {string} ks - ks
      * @param {Object} event - event
@@ -73,8 +73,8 @@ describe('KAnalyticsPlugin', function() {
       ('playlistId' in event).should.be.false;
     }
 
-    beforeEach(function() {
-      sandbox = sinon.sandbox.create();
+    beforeEach(function () {
+      sandbox = sinon.createSandbox();
       sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
       player = loadPlayer(config);
     });
@@ -308,7 +308,7 @@ describe('KAnalyticsPlugin', function() {
     });
   });
 
-  describe('Change Media', function() {
+  describe('Change Media', function () {
     const cm_ks =
       'MGI3MzFmMmUwN2IyYmYzN2IxOGEzZjFjMTAzM2U4NTg5MTgyY2MyZnwxMDkxOzEwOTE7MTUwNjY5Mjc0MzswOzE1MDY2MDYzNDMuMTE0MjswO3ZpZXc6Kix3aWRnZXQ6MTs7';
     const cm_type = 'live';
@@ -369,8 +369,8 @@ describe('KAnalyticsPlugin', function() {
       }
     }
 
-    beforeEach(function() {
-      sandbox = sinon.sandbox.create();
+    beforeEach(function () {
+      sandbox = sinon.createSandbox();
       sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
       player = loadPlayer(config);
       player.ready().then(() => {
@@ -499,9 +499,9 @@ describe('KAnalyticsPlugin', function() {
     });
   });
 
-  describe('handle missing params', function() {
-    beforeEach(function() {
-      sandbox = sinon.sandbox.create();
+  describe('handle missing params', function () {
+    beforeEach(function () {
+      sandbox = sinon.createSandbox();
       sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
     });
     it('should not send report if partner id is missing', done => {
