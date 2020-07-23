@@ -559,16 +559,10 @@ describe('KAnalyticsPlugin', function() {
             const onTimeUpdate = () => {
               try {
                 player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-                let payload25 = sendSpy.getCall(8).args[0];
-                let payload50 = sendSpy.getCall(9).args[0];
-                let payload75 = sendSpy.getCall(10).args[0];
-                let payload100 = sendSpy.getCall(11).args[0];
-                if (payload25.event.eventType === 2) {
-                  payload25 = sendSpy.getCall(9).args[0];
-                  payload50 = sendSpy.getCall(10).args[0];
-                  payload75 = sendSpy.getCall(11).args[0];
-                  payload100 = sendSpy.getCall(12).args[0];
-                }
+                const payload25 = sendSpy.getCall(9).args[0];
+                const payload50 = sendSpy.getCall(10).args[0];
+                const payload75 = sendSpy.getCall(11).args[0];
+                const payload100 = sendSpy.getCall(12).args[0];
                 payload25.event.eventType.should.equal(4);
                 payload50.event.eventType.should.equal(5);
                 payload75.event.eventType.should.equal(6);
