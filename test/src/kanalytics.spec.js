@@ -1,6 +1,6 @@
 import '../../src/index';
-import {loadPlayer} from 'playkit-js';
-import * as TestUtils from 'playkit-js/test/src/utils/test-utils';
+import {setup} from 'kaltura-player-js';
+import * as TestUtils from './utils/test-utils';
 
 describe('KAnalyticsPlugin', function() {
   let player, sandbox, sendSpy, config;
@@ -12,9 +12,13 @@ describe('KAnalyticsPlugin', function() {
   const pId = 1068292;
   const uId = 123456;
   const sId = '7296b4fd-3fcb-666d-51fc-34065579334c';
+  const targetId = 'player-placeholder_kanalytics.spec';
 
   before(function() {
+    TestUtils.createElement('DIV', targetId);
     config = {
+      targetId,
+      provider: {},
       id: id,
       session: {
         partnerID: pId,
@@ -76,7 +80,7 @@ describe('KAnalyticsPlugin', function() {
     beforeEach(function() {
       sandbox = sinon.sandbox.create();
       sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
-      player = loadPlayer(config);
+      player = setup(config);
     });
 
     it('should send widget loaded before load', () => {
@@ -372,7 +376,7 @@ describe('KAnalyticsPlugin', function() {
     beforeEach(function() {
       sandbox = sinon.sandbox.create();
       sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
-      player = loadPlayer(config);
+      player = setup(config);
       player.ready().then(() => {
         player.play();
       });
@@ -506,7 +510,7 @@ describe('KAnalyticsPlugin', function() {
     });
     it('should not send report if partner id is missing', done => {
       config.plugins.kanalytics.partnerId = '';
-      player = loadPlayer(config);
+      player = setup(config);
       player.ready().then(() => {
         sendSpy.callCount.should.equal(0);
         done();
@@ -516,7 +520,7 @@ describe('KAnalyticsPlugin', function() {
 
     it('should not send report if entry id is missing', done => {
       config.plugins.kanalytics.entryId = '';
-      player = loadPlayer(config);
+      player = setup(config);
       player.ready().then(() => {
         sendSpy.callCount.should.equal(0);
         done();

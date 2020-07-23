@@ -66,17 +66,17 @@ module.exports = {
     modules: [path.resolve(__dirname, 'src'), 'node_modules']
   },
   externals: {
-    'playkit-js': {
-      commonjs: 'playkit-js',
-      commonjs2: 'playkit-js',
-      amd: 'playkit-js',
-      root: ['playkit', 'core']
+    'kaltura-player-js': {
+      commonjs: 'kaltura-player-js',
+      commonjs2: 'kaltura-player-js',
+      amd: 'kaltura-player-js',
+      root: ['KalturaPlayer']
     },
     'playkit-js-providers': {
       commonjs: 'playkit-js-providers',
       commonjs2: 'playkit-js-providers',
       amd: 'playkit-js-providers',
-      root: ['playkit', 'providers']
+      root: ['KalturaPlayer', 'providers']
     }
   }
 };

@@ -1,6 +1,11 @@
+const path = require('path');
 let webpackConfig = require('./webpack.config.js');
 //Need to remove externals otherwise they won't be included in test
 delete webpackConfig.externals;
+// Need to add alias for a specific kaltura-player-js export lib
+webpackConfig.resolve = webpackConfig.resolve || {};
+webpackConfig.resolve.alias = webpackConfig.resolve.alias || {};
+webpackConfig.resolve.alias['kaltura-player-js'] = path.resolve('./node_modules/kaltura-player-js/dist/kaltura-ovp-player');
 
 const isWindows = /^win/.test(process.platform);
 const isMacOS = /^darwin/.test(process.platform);
@@ -12,7 +17,7 @@ const customLaunchers = {
   }
 };
 
-module.exports = function(config) {
+module.exports = function (config) {
   let karmaConf = {
     logLevel: config.LOG_INFO,
     browsers: ['Chrome', 'Firefox'],

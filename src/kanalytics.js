@@ -1,5 +1,5 @@
 //@flow
-import {BasePlugin} from 'playkit-js';
+import {BasePlugin} from 'kaltura-player-js';
 import {OVPStatsService, RequestBuilder} from 'playkit-js-providers/dist/playkit-stats-service';
 import EventTypes from './event-types';
 import Event from './event';
