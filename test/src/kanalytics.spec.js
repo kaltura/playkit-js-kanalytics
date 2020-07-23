@@ -92,22 +92,30 @@ describe('KAnalyticsPlugin', function() {
 
     it('should send media loaded', done => {
       player.ready().then(() => {
-        const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload);
-        payload.event.seek.should.be.false;
-        payload.event.eventType.should.equal(2);
-        done();
+        try {
+          const payload = sendSpy.lastCall.args[0];
+          verifyPayloadProperties(payload);
+          payload.event.seek.should.be.false;
+          payload.event.eventType.should.equal(2);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
       player.load();
     });
 
     it('should send first play', done => {
       player.addEventListener(player.Event.FIRST_PLAY, () => {
-        const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload);
-        payload.event.seek.should.be.false;
-        payload.event.eventType.should.equal(3);
-        done();
+        try {
+          const payload = sendSpy.lastCall.args[0];
+          verifyPayloadProperties(payload);
+          payload.event.seek.should.be.false;
+          payload.event.eventType.should.equal(3);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
       player.play();
     });
@@ -118,11 +126,15 @@ describe('KAnalyticsPlugin', function() {
       });
       player.addEventListener(player.Event.ENDED, () => {
         player.addEventListener(player.Event.PLAY, () => {
-          const payload = sendSpy.lastCall.args[0];
-          verifyPayloadProperties(payload);
-          payload.event.seek.should.be.true;
-          payload.event.eventType.should.equal(16);
-          done();
+          try {
+            const payload = sendSpy.lastCall.args[0];
+            verifyPayloadProperties(payload);
+            payload.event.seek.should.be.true;
+            payload.event.eventType.should.equal(16);
+            done();
+          } catch (e) {
+            done(e);
+          }
         });
         player.play();
       });
@@ -134,11 +146,15 @@ describe('KAnalyticsPlugin', function() {
         player.currentTime = player.duration / 2;
       });
       player.addEventListener(player.Event.SEEKED, () => {
-        const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload);
-        payload.event.seek.should.be.false;
-        payload.event.eventType.should.equal(17);
-        done();
+        try {
+          const payload = sendSpy.lastCall.args[0];
+          verifyPayloadProperties(payload);
+          payload.event.seek.should.be.false;
+          payload.event.eventType.should.equal(17);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
       player.play();
     });
@@ -148,38 +164,52 @@ describe('KAnalyticsPlugin', function() {
         player.currentTime = player.duration / 2;
       });
       player.addEventListener(player.Event.SEEKED, () => {
-        const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload);
-        payload.event.seek.should.be.false;
-        payload.event.eventType.should.equal(17);
-        done();
+        try {
+          const payload = sendSpy.lastCall.args[0];
+          verifyPayloadProperties(payload);
+          payload.event.seek.should.be.false;
+          payload.event.eventType.should.equal(17);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
       player.load();
     });
 
     it('should not send seek for live', done => {
-      player._config.type = 'Live';
+      player._localPlayer._config.sources.type = 'Live';
       player.addEventListener(player.Event.FIRST_PLAY, () => {
         player.currentTime = player.duration / 2;
       });
       player.addEventListener(player.Event.SEEKED, () => {
-        const payload = sendSpy.lastCall.args[0];
-        payload.event.eventType.should.not.equal(17);
-        done();
+        try {
+          const payload = sendSpy.lastCall.args[0];
+          payload.event.eventType.should.not.equal(17);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
       player.play();
     });
 
     it('should send seek for live + dvr', done => {
-      player._config.type = 'Live';
-      player._config.dvr = true;
+      player._localPlayer._config.sources.type = 'Live';
+      player._localPlayer._config.sources.dvr = true;
+      player.config.sources.type = 'Live';
+      player.config.sources.dvr = true;
       player.addEventListener(player.Event.FIRST_PLAY, () => {
         player.currentTime = player.duration / 2;
       });
       player.addEventListener(player.Event.SEEKED, () => {
-        const payload = sendSpy.lastCall.args[0];
-        payload.event.eventType.should.equal(17);
-        done();
+        try {
+          const payload = sendSpy.lastCall.args[0];
+          payload.event.eventType.should.equal(17);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
       player.play();
     });
@@ -224,10 +254,15 @@ describe('KAnalyticsPlugin', function() {
         player.currentTime = 4;
       });
       player.addEventListener(player.Event.TIME_UPDATE, () => {
-        const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload);
-        payload.event.eventType.should.equal(4);
-        done();
+        try {
+          const payload = sendSpy.lastCall.args[0];
+          verifyPayloadProperties(payload);
+          if (payload.event.eventType === 4) {
+            done();
+          }
+        } catch (e) {
+          done(e);
+        }
       });
       player.load();
     });
@@ -237,10 +272,15 @@ describe('KAnalyticsPlugin', function() {
         player.currentTime = 7;
       });
       player.addEventListener(player.Event.TIME_UPDATE, () => {
-        const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload);
-        payload.event.eventType.should.equal(5);
-        done();
+        try {
+          const payload = sendSpy.lastCall.args[0];
+          verifyPayloadProperties(payload);
+          if (payload.event.eventType === 5) {
+            done();
+          }
+        } catch (e) {
+          done(e);
+        }
       });
       player.load();
     });
@@ -250,10 +290,15 @@ describe('KAnalyticsPlugin', function() {
         player.currentTime = 10;
       });
       player.addEventListener(player.Event.TIME_UPDATE, () => {
-        const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload);
-        payload.event.eventType.should.equal(6);
-        done();
+        try {
+          const payload = sendSpy.lastCall.args[0];
+          verifyPayloadProperties(payload);
+          if (payload.event.eventType === 6) {
+            done();
+          }
+        } catch (e) {
+          done(e);
+        }
       });
       player.load();
     });
@@ -263,26 +308,35 @@ describe('KAnalyticsPlugin', function() {
         player.getVideoElement().currentTime = 12.7;
       });
       player.addEventListener(player.Event.TIME_UPDATE, () => {
-        const payload = sendSpy.lastCall.args[0];
-        verifyPayloadProperties(payload);
-        payload.event.eventType.should.equal(7);
-        done();
+        try {
+          const payload = sendSpy.lastCall.args[0];
+          verifyPayloadProperties(payload);
+          if (payload.event.eventType === 7) {
+            done();
+          }
+        } catch (e) {
+          done(e);
+        }
       });
       player.load();
     });
 
     it('should send 25% - 100%', done => {
       const onTimeUpdate = () => {
-        player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-        const payload25 = sendSpy.getCall(1).args[0];
-        const payload50 = sendSpy.getCall(2).args[0];
-        const payload75 = sendSpy.getCall(3).args[0];
-        const payload100 = sendSpy.getCall(4).args[0];
-        payload25.event.eventType.should.equal(4);
-        payload50.event.eventType.should.equal(5);
-        payload75.event.eventType.should.equal(6);
-        payload100.event.eventType.should.equal(7);
-        done();
+        try {
+          player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
+          const payload25 = sendSpy.getCall(2).args[0];
+          const payload50 = sendSpy.getCall(3).args[0];
+          const payload75 = sendSpy.getCall(4).args[0];
+          const payload100 = sendSpy.getCall(5).args[0];
+          payload25.event.eventType.should.equal(4);
+          payload50.event.eventType.should.equal(5);
+          payload75.event.eventType.should.equal(6);
+          payload100.event.eventType.should.equal(7);
+          done();
+        } catch (e) {
+          done(e);
+        }
       };
       player.addEventListener(player.Event.LOADED_METADATA, () => {
         player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
@@ -298,10 +352,14 @@ describe('KAnalyticsPlugin', function() {
       player.addEventListener(player.Event.ENDED, () => {
         player.addEventListener(player.Event.PLAY, () => {
           const onTimeUpdate = () => {
-            player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-            const payload = sendSpy.lastCall.args[0];
-            payload.event.eventType.should.equal(16);
-            done();
+            try {
+              player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
+              const payload = sendSpy.lastCall.args[0];
+              payload.event.eventType.should.equal(16);
+              done();
+            } catch (e) {
+              done(e);
+            }
           };
           player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
           player.currentTime = 12.5;
@@ -387,11 +445,15 @@ describe('KAnalyticsPlugin', function() {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.ready().then(() => {
-            const payload = sendSpy.lastCall.args[0];
-            verifyPayloadProperties(payload);
-            payload.event.seek.should.be.false;
-            payload.event.eventType.should.not.equal(1);
-            done();
+            try {
+              const payload = sendSpy.lastCall.args[0];
+              verifyPayloadProperties(payload);
+              payload.event.seek.should.be.false;
+              payload.event.eventType.should.not.equal(1);
+              done();
+            } catch (e) {
+              done(e);
+            }
           });
           player.load();
         });
@@ -403,11 +465,15 @@ describe('KAnalyticsPlugin', function() {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.ready().then(() => {
-            const payload = sendSpy.lastCall.args[0];
-            verifyPayloadProperties(payload);
-            payload.event.seek.should.be.false;
-            payload.event.eventType.should.equal(2);
-            done();
+            try {
+              const payload = sendSpy.lastCall.args[0];
+              verifyPayloadProperties(payload);
+              payload.event.seek.should.be.false;
+              payload.event.eventType.should.equal(2);
+              done();
+            } catch (e) {
+              done(e);
+            }
           });
           player.load();
         });
@@ -419,11 +485,15 @@ describe('KAnalyticsPlugin', function() {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.addEventListener(player.Event.FIRST_PLAY, () => {
-            const payload = sendSpy.lastCall.args[0];
-            verifyPayloadProperties(payload);
-            payload.event.seek.should.be.false;
-            payload.event.eventType.should.equal(3);
-            done();
+            try {
+              const payload = sendSpy.lastCall.args[0];
+              verifyPayloadProperties(payload);
+              payload.event.seek.should.be.false;
+              payload.event.eventType.should.equal(3);
+              done();
+            } catch (e) {
+              done(e);
+            }
           });
           player.play();
         });
@@ -435,9 +505,13 @@ describe('KAnalyticsPlugin', function() {
       player.addEventListener(player.Event.CHANGE_SOURCE_STARTED, () => {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.addEventListener(player.Event.FIRST_PLAY, () => {
-            const payload = sendSpy.lastCall.args[0];
-            payload.event.seek.should.be.false;
-            done();
+            try {
+              const payload = sendSpy.lastCall.args[0];
+              payload.event.seek.should.be.false;
+              done();
+            } catch (e) {
+              done(e);
+            }
           });
           player.play();
         });
@@ -457,9 +531,13 @@ describe('KAnalyticsPlugin', function() {
       player.addEventListener(player.Event.ENDED, () => {
         player.addEventListener(player.Event.LOADED_METADATA, () => {
           player.addEventListener(player.Event.PLAY, () => {
-            const payload = sendSpy.getCall(10).args[0];
-            payload.event.eventType.should.not.equal(16);
-            done();
+            try {
+              const payload = sendSpy.getCall(10).args[0];
+              payload.event.eventType.should.not.equal(16);
+              done();
+            } catch (e) {
+              done(e);
+            }
           });
           player.play();
         });
@@ -473,17 +551,21 @@ describe('KAnalyticsPlugin', function() {
         player.addEventListener(player.Event.SOURCE_SELECTED, () => {
           player.addEventListener(player.Event.LOADED_METADATA, () => {
             const onTimeUpdate = () => {
-              player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
-              const payload25 = sendSpy.getCall(8).args[0];
-              const payload50 = sendSpy.getCall(9).args[0];
-              const payload75 = sendSpy.getCall(10).args[0];
-              const payload100 = sendSpy.getCall(11).args[0];
-              payload25.event.eventType.should.equal(4);
-              payload50.event.eventType.should.equal(5);
-              payload75.event.eventType.should.equal(6);
-              payload100.event.eventType.should.equal(7);
-              verifyPayloadProperties(payload25);
-              done();
+              try {
+                player.removeEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
+                const payload25 = sendSpy.getCall(9).args[0];
+                const payload50 = sendSpy.getCall(10).args[0];
+                const payload75 = sendSpy.getCall(11).args[0];
+                const payload100 = sendSpy.getCall(12).args[0];
+                payload25.event.eventType.should.equal(4);
+                payload50.event.eventType.should.equal(5);
+                payload75.event.eventType.should.equal(6);
+                payload100.event.eventType.should.equal(7);
+                verifyPayloadProperties(payload25);
+                done();
+              } catch (e) {
+                done(e);
+              }
             };
             player.addEventListener(player.Event.TIME_UPDATE, onTimeUpdate);
             player.getVideoElement().currentTime = 12.7;
@@ -512,8 +594,12 @@ describe('KAnalyticsPlugin', function() {
       config.plugins.kanalytics.partnerId = '';
       player = setup(config);
       player.ready().then(() => {
-        sendSpy.callCount.should.equal(0);
-        done();
+        try {
+          sendSpy.callCount.should.equal(0);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
       player.load();
     });
@@ -522,8 +608,12 @@ describe('KAnalyticsPlugin', function() {
       config.plugins.kanalytics.entryId = '';
       player = setup(config);
       player.ready().then(() => {
-        sendSpy.callCount.should.equal(0);
-        done();
+        try {
+          sendSpy.callCount.should.equal(0);
+          done();
+        } catch (e) {
+          done(e);
+        }
       });
       player.load();
     });
