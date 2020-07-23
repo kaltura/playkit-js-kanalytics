@@ -3616,7 +3616,7 @@ jstransform@^11.0.3:
 
 "kaltura-player-js@https://github.com/kaltura/kaltura-player-js.git#FEC-10057":
   version "0.55.0"
-  resolved "https://github.com/kaltura/kaltura-player-js.git#de01c1d05b09028478640c6609c18b93c09b9ae1"
+  resolved "https://github.com/kaltura/kaltura-player-js.git#06b3f99b0c9b3310ad11d20d0922cbca5b98f50b"
   dependencies:
     "@playkit-js/playkit-js" "https://github.com/kaltura/playkit-js.git#FEC-10057"
     "@playkit-js/playkit-js-dash" "^1.18.3"
