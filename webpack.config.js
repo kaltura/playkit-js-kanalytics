@@ -2,7 +2,6 @@
 
 const webpack = require('webpack');
 const path = require('path');
-const PROD = process.env.NODE_ENV === 'production';
 const packageData = require('./package.json');
 
 let plugins = [
@@ -74,8 +73,5 @@ module.exports = {
       amd: 'playkit-js-providers',
       root: ['KalturaPlayer', 'providers']
     }
-  },
-  optimization: {
-    minimize: PROD
   }
 };
