@@ -89,7 +89,7 @@
     "lint-staged": "^10.2.11",
     "mocha": "^8.0.1",
     "mocha-cli": "^1.0.1",
-    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#master",
+    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#update-dist",
     "prettier": "^2.0.5",
     "sinon": "^9.0.2",
     "sinon-chai": "^3.5.0",
@@ -101,7 +101,7 @@
   },
   "peerDependencies": {
     "@playkit-js/playkit-js": "0.62.1-canary.724715e",
-    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#master"
+    "playkit-js-providers": "https://github.com/kaltura/playkit-js-providers.git#update-dist"
   },
   "publishConfig": {
     "access": "public"
