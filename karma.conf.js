@@ -1,6 +1,8 @@
 let webpackConfig = require('./webpack.config.js');
 //Need to remove externals otherwise they won't be included in test
 delete webpackConfig.externals;
+// Need to define inline source maps when using karma
+webpackConfig.devtool = 'inline-source-map';
 
 const isWindows = /^win/.test(process.platform);
 const isMacOS = /^darwin/.test(process.platform);
@@ -12,9 +14,11 @@ const customLaunchers = {
   }
 };
 
-module.exports = function(config) {
+module.exports = function (config) {
   let karmaConf = {
     logLevel: config.LOG_INFO,
+    browserDisconnectTimeout: 50000,
+    browserNoActivityTimeout: 70000,
     browsers: ['Chrome', 'Firefox'],
     concurrency: 1,
     singleRun: true,
@@ -33,7 +37,7 @@ module.exports = function(config) {
     client: {
       mocha: {
         reporter: 'html',
-        timeout: 50000
+        timeout: 70000
       }
     }
   };
