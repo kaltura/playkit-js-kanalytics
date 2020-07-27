@@ -2,7 +2,7 @@ import '../../src/index';
 import {setup} from 'kaltura-player-js';
 import * as TestUtils from './utils/test-utils';
 
-describe('KAnalyticsPlugin', function() {
+describe('KAnalyticsPlugin', function () {
   let player, sandbox, sendSpy, config;
   const playerVersion = '1.2.3';
   const ks =
@@ -14,7 +14,7 @@ describe('KAnalyticsPlugin', function() {
   const sId = '7296b4fd-3fcb-666d-51fc-34065579334c';
   const targetId = 'player-placeholder_kanalytics.spec';
 
-  before(function() {
+  before(function () {
     TestUtils.createElement('DIV', targetId);
     config = {
       targetId,
@@ -49,13 +49,13 @@ describe('KAnalyticsPlugin', function() {
     };
   });
 
-  afterEach(function() {
+  afterEach(function () {
     sandbox.restore();
     player.destroy();
     TestUtils.removeVideoElementsFromTestPage();
   });
 
-  describe('Basic Playback', function() {
+  describe('Basic Playback', function () {
     /**
      * @param {string} ks - ks
      * @param {Object} event - event
@@ -77,7 +77,7 @@ describe('KAnalyticsPlugin', function() {
       ('playlistId' in event).should.be.false;
     }
 
-    beforeEach(function() {
+    beforeEach(function () {
       sandbox = sinon.createSandbox();
       sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
       player = setup(config);
@@ -376,7 +376,7 @@ describe('KAnalyticsPlugin', function() {
     });
   });
 
-  describe('Change Media', function() {
+  describe('Change Media', function () {
     const cm_ks =
       'MGI3MzFmMmUwN2IyYmYzN2IxOGEzZjFjMTAzM2U4NTg5MTgyY2MyZnwxMDkxOzEwOTE7MTUwNjY5Mjc0MzswOzE1MDY2MDYzNDMuMTE0MjswO3ZpZXc6Kix3aWRnZXQ6MTs7';
     const cm_type = 'live';
@@ -437,7 +437,7 @@ describe('KAnalyticsPlugin', function() {
       }
     }
 
-    beforeEach(function() {
+    beforeEach(function () {
       sandbox = sinon.createSandbox();
       sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
       player = setup(config);
@@ -591,8 +591,8 @@ describe('KAnalyticsPlugin', function() {
     });
   });
 
-  describe('handle missing params', function() {
-    beforeEach(function() {
+  describe('handle missing params', function () {
+    beforeEach(function () {
       sandbox = sinon.createSandbox();
       sendSpy = sandbox.spy(XMLHttpRequest.prototype, 'send');
     });
