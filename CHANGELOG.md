@@ -1,6 +1,16 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [0.11.0](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.10.1...v0.11.0) (2020-08-05)
+
+
+### Features
+
+* **FEC-10057:** move the plugin manager to kaltura player ([#44](https://github.com/kaltura/playkit-js-kanalytics/issues/44)) ([f14eb91](https://github.com/kaltura/playkit-js-kanalytics/commit/f14eb91))
+* **FEC-10290:** upgrade NPM packages ([#43](https://github.com/kaltura/playkit-js-kanalytics/issues/43)) ([04ac722](https://github.com/kaltura/playkit-js-kanalytics/commit/04ac722))
+
+
 
 <a name="0.10.1"></a>
 ## [0.10.1](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.10.0...v0.10.1) (2019-05-01)
