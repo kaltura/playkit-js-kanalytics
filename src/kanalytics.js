@@ -1,5 +1,5 @@
 //@flow
-import {BasePlugin} from '@playkit-js/playkit-js';
+import {BasePlugin} from 'kaltura-player-js';
 import {OVPStatsService, RequestBuilder} from 'playkit-js-providers/dist/playkit-stats-service';
 import EventTypes from './event-types';
 import Event from './event';
@@ -163,7 +163,7 @@ export default class KAnalytics extends BasePlugin {
    */
   _sendSeekAnalytic(): void {
     const now = new Date().getTime();
-    if (this._lastSeekEvent + SEEK_OFFSET < now && (this.player.config.type !== LIVE || this.player.config.dvr)) {
+    if (this._lastSeekEvent + SEEK_OFFSET < now && (this.player.config.sources.type !== LIVE || this.player.config.sources.dvr)) {
       // avoid sending lots of seeking while scrubbing
       this._sendAnalytics(EventTypes.SEEK);
       this._hasSeeked = true;
@@ -177,7 +177,7 @@ export default class KAnalytics extends BasePlugin {
    * @return {void}
    */
   _sendTimePercentAnalytic(): void {
-    if (this.player.config.type !== LIVE) {
+    if (this.player.config.sources.type !== LIVE) {
       const percent = this.player.currentTime / this.player.duration;
       if (!this._timePercentEvent.PLAY_REACHED_25 && percent >= 0.25) {
         this._timePercentEvent.PLAY_REACHED_25 = true;
