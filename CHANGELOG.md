@@ -1,6 +1,20 @@
-# Changelog
+# Change Log
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+# [1.0.0](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.11.0...v1.0.0) (2020-08-20)
+
+
+### Features
+
+* **FEC-10347:** expose kaltura player as a global variable instead of UMD ([#50](https://github.com/kaltura/playkit-js-kanalytics/issues/50)) ([28641f8](https://github.com/kaltura/playkit-js-kanalytics/commit/28641f8a6bda8f7b05acf33d927cbcaa2f541822))
+
+
+### BREAKING CHANGES
+
+* **FEC-10347:** kanalytics plugin is not UMD anymore 
+
+
 
 ## [0.11.0](https://github.com/kaltura/playkit-js-kanalytics/compare/v0.10.1...v0.11.0) (2020-08-05)
 
