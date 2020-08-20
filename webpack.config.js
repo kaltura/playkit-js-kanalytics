@@ -20,8 +20,6 @@ module.exports = {
     path: __dirname + '/dist',
     filename: '[name].js',
     library: ['playkit', 'kanalytics'],
-    libraryTarget: 'umd',
-    umdNamedDefine: true,
     devtoolModuleFilenameTemplate: './kanalytics/[resource-path]'
   },
   devtool: 'source-map',
@@ -61,17 +59,7 @@ module.exports = {
     modules: [path.resolve(__dirname, 'src'), 'node_modules']
   },
   externals: {
-    'kaltura-player-js': {
-      commonjs: 'kaltura-player-js',
-      commonjs2: 'kaltura-player-js',
-      amd: 'kaltura-player-js',
-      root: ['KalturaPlayer']
-    },
-    'playkit-js-providers': {
-      commonjs: 'playkit-js-providers',
-      commonjs2: 'playkit-js-providers',
-      amd: 'playkit-js-providers',
-      root: ['KalturaPlayer', 'providers']
-    }
+    'kaltura-player-js': ['KalturaPlayer'],
+    'playkit-js-providers': ['KalturaPlayer', 'providers']
   }
 };
