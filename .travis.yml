@@ -39,7 +39,7 @@ jobs:
             secure: $GH_TOKEN
           file_glob: true
           file: dist/*
-          prerelease: true
+          prerelease: false
           skip_cleanup: true
           on:
             branch: master
